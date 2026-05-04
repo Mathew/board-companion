@@ -88,14 +88,18 @@ document.addEventListener('alpine:init', () => {
       }));
     },
 
-    // Inject per-game theme CSS (V7)
+    // Inject per-game theme CSS (V7). Skip if already loaded (V10 — avoids FOUC on init).
     applyTheme(gameId) {
+      const href = `themes/${gameId}.css`;
       const existing = document.getElementById('game-theme');
-      if (existing) existing.remove();
+      if (existing) {
+        if (existing.getAttribute('href') === href) return;
+        existing.remove();
+      }
       const link = document.createElement('link');
       link.id = 'game-theme';
       link.rel = 'stylesheet';
-      link.href = `themes/${gameId}.css`;
+      link.href = href;
       document.head.appendChild(link);
     },
 

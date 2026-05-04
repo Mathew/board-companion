@@ -40,6 +40,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V7 | theme injected = `themes/<config.id>.css` — loaded dynamically after game JSON, no game-specific values in style.css |
 | V8 | all color/font tokens are CSS custom properties; style.css defines fallback defaults only |
 | V9 | game theme CSS derived from official game visual design (cover + interior pages of source material) |
+| V10 | theme CSS `<link id="game-theme">` present in HTML `<head>` before any JS executes — no FOUC on initial load |
 
 ## §T — Tasks
 
@@ -62,3 +63,4 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 
 | id | date | cause | fix |
 |----|------|-------|-----|
+| B1 | 2026-05-04 | theme CSS injected after async JSON fetch — style.css dark fallbacks paint first (FOUC) | pre-link theme in HTML head; applyTheme skips re-inject if href unchanged (V10) |
