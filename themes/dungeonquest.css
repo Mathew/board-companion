@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  /* Palette — warm parchment interior (DQ Revised Edition interior pages) */
+  --bg: #F5F0E5;
+  --surface: #EDE5C8;
+  --surface2: #F0EBD8;
+  --accent: #8B2010;
+  --accent-dim: #5A1008;
+  --text: #1E1610;
+  --text-dim: #7A5C3A;
+  --text-invert: #F5F0E5;
+  --border: #C8A870;
+  --empty: #DDD0B0;
+
+  /* Typography */
+  --font-heading: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', serif;
+  --font-body: 'Crimson Text', 'Georgia', serif;
+}
+
+/* Cover-style dark header — overrides var(--surface) for header only */
+header {
+  background: #1A1008;
+  border-bottom-color: #3A2810;
+}
+
+/* Gold title on dark header (--accent is blood red; title matches cover amber-gold) */
+header h1 {
+  color: #C49028;
+}

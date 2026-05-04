@@ -1,0 +1,63 @@
+{
+  "id": "dungeonquest",
+  "game": "DungeonQuest",
+  "edition": "Fantasy Flight Games Revised Edition",
+  "_note": "Verify card names and counts against your physical copy. Edit this file to match.",
+  "decks": [
+    {
+      "id": "fortune",
+      "name": "Fortune Deck",
+      "cards": [
+        { "name": "5 Gold Pieces", "count": 4 },
+        { "name": "10 Gold Pieces", "count": 3 },
+        { "name": "15 Gold Pieces", "count": 2 },
+        { "name": "20 Gold Pieces", "count": 1 },
+        { "name": "Short Sword", "count": 2 },
+        { "name": "Broad Sword", "count": 1 },
+        { "name": "Battle Axe", "count": 1 },
+        { "name": "Crossbow", "count": 1 },
+        { "name": "Shield", "count": 2 },
+        { "name": "Helmet", "count": 1 },
+        { "name": "Chain Mail", "count": 1 },
+        { "name": "Healing Potion", "count": 3 },
+        { "name": "Speed Potion", "count": 2 },
+        { "name": "Strength Potion", "count": 1 },
+        { "name": "Ring of Protection", "count": 1 },
+        { "name": "Cloak of Shadows", "count": 1 },
+        { "name": "Cursed Treasure", "count": 2 },
+        { "name": "Nothing", "count": 3 }
+      ]
+    },
+    {
+      "id": "chamber",
+      "name": "Chamber Deck",
+      "cards": [
+        { "name": "Dragon Asleep", "count": 4 },
+        { "name": "Dragon Stirs", "count": 3 },
+        { "name": "Dragon Wakes", "count": 2 },
+        { "name": "Dragon Attacks!", "count": 2 },
+        { "name": "Treasure Hoard", "count": 3 },
+        { "name": "Secret Passage", "count": 2 },
+        { "name": "Ancient Trap", "count": 2 },
+        { "name": "Shadows Stir", "count": 2 }
+      ]
+    },
+    {
+      "id": "city",
+      "name": "City Event Deck",
+      "cards": [
+        { "name": "Market Day", "count": 3 },
+        { "name": "Guild Hall Open", "count": 2 },
+        { "name": "Tavern Brawl", "count": 2 },
+        { "name": "Plague Spreads", "count": 1 },
+        { "name": "Festival", "count": 2 },
+        { "name": "Tax Collector", "count": 2 },
+        { "name": "Thieves' Quarter", "count": 3 },
+        { "name": "Healer's Aid", "count": 3 },
+        { "name": "Armorer's Sale", "count": 2 },
+        { "name": "Rumours of Darkness", "count": 2 },
+        { "name": "Hero's Welcome", "count": 3 }
+      ]
+    }
+  ]
+}

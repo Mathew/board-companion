@@ -1,0 +1,179 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Fallback defaults — game theme CSS overrides these (V8) */
+:root {
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface2: #16213e;
+  --accent: #e94560;
+  --accent-dim: #a01f36;
+  --text: #e8e8f0;
+  --text-dim: #888;
+  --border: #2a2a4a;
+  --empty: #2a2a2a;
+  --radius: 12px;
+  --gap: 16px;
+  --font-heading: system-ui, sans-serif;
+  --font-body: system-ui, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --text-invert: var(--text-invert);
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Loading & Error */
+.loading, .error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  font-size: 1.2rem;
+  padding: var(--gap);
+}
+.error-banner { color: var(--accent); flex-direction: column; gap: 8px; }
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px var(--gap);
+}
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+header h1 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+/* Main */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--gap);
+}
+
+/* Decks grid */
+.decks-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+}
+@media (min-width: 540px) {
+  .decks-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 800px) {
+  .decks-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Deck card */
+.deck-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s;
+}
+.deck-card.deck-empty { border-color: var(--empty); opacity: 0.75; }
+
+.deck-header { display: flex; flex-direction: column; gap: 4px; }
+
+.deck-name {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.deck-counts {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.count-remain { color: var(--text); font-weight: 600; }
+.count-sep { color: var(--border); }
+
+/* Current card */
+.current-card-area {
+  min-height: 80px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+}
+.current-card { display: flex; flex-direction: column; gap: 4px; }
+.card-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.card-name { font-size: 1.05rem; font-weight: 600; color: var(--accent); }
+.card-placeholder { font-size: 0.85rem; color: var(--text-dim); }
+
+/* Buttons */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  -webkit-appearance: none;
+  min-height: 48px;
+}
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-draw {
+  background: var(--accent);
+  color: var(--text-invert);
+  font-size: 1.1rem;
+}
+.btn-draw:not(:disabled):active { background: var(--accent-dim); }
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  padding: 10px 16px;
+  min-height: 40px;
+}
+.btn-secondary:not(:disabled):active { background: var(--border); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 8px 16px;
+  min-height: 36px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.btn-danger:active { background: var(--accent); color: var(--text-invert); }

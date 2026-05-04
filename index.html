@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DungeonQuest">
+  <title>DungeonQuest</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+</head>
+<body x-data>
+
+  <div x-show="$store.game.error" class="error-banner">
+    <strong>Error</strong>
+    <span x-text="$store.game.error"></span>
+  </div>
+
+  <div x-show="!$store.game.loaded && !$store.game.error" class="loading">
+    Loading decks…
+  </div>
+
+  <div x-show="$store.game.loaded">
+    <header>
+      <div class="header-inner">
+        <h1 x-text="$store.game.config?.game ?? 'DungeonQuest'"></h1>
+        <button @click="$store.game.resetAll()" class="btn btn-danger">Reset All</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="decks-grid">
+        <template x-for="deck in $store.game.decks" :key="deck.id">
+          <div class="deck-card" :class="{ 'deck-empty': deck.draw.length === 0 }">
+
+            <div class="deck-header">
+              <h2 class="deck-name" x-text="deck.name"></h2>
+              <div class="deck-counts">
+                <span class="count-remain" x-text="deck.draw.length + ' left'"></span>
+                <span class="count-sep">·</span>
+                <span class="count-discard" x-text="deck.discard.length + ' discarded'"></span>
+                <span class="count-sep">·</span>
+                <span x-text="(deck.draw.length + deck.discard.length) + ' total'"></span>
+              </div>
+            </div>
+
+            <div class="current-card-area">
+              <div x-show="deck.discard.length > 0" class="current-card">
+                <div class="card-label">Last drawn</div>
+                <div class="card-name" x-text="deck.discard[deck.discard.length - 1]"></div>
+              </div>
+              <div x-show="deck.discard.length === 0" class="card-placeholder">
+                No cards drawn yet
+              </div>
+            </div>
+
+            <button
+              @click="$store.game.draw(deck.id)"
+              :disabled="deck.draw.length === 0"
+              class="btn btn-draw"
+            >
+              <span x-show="deck.draw.length > 0">Draw Card</span>
+              <span x-show="deck.draw.length === 0">Deck Empty</span>
+            </button>
+
+            <button
+              @click="$store.game.resetDeck(deck.id)"
+              :disabled="deck.discard.length === 0"
+              class="btn btn-secondary"
+            >
+              Reshuffle discards
+              <span x-show="deck.discard.length > 0">(<span x-text="deck.discard.length"></span>)</span>
+            </button>
+
+          </div>
+        </template>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
