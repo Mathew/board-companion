@@ -15,7 +15,8 @@
   --gap: 16px;
   --font-heading: system-ui, sans-serif;
   --font-body: system-ui, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --text-invert: var(--text-invert);
+  --text-invert: #fff;
+  --draw-duration: 1s;
 }
 
 html { font-size: 16px; }
@@ -117,9 +118,9 @@ main {
 .count-remain { color: var(--text); font-weight: 600; }
 .count-sep { color: var(--border); }
 
-/* Current card */
+/* Current card — min-height reserves room for full detail (V16, no layout shift) */
 .current-card-area {
-  min-height: 80px;
+  min-height: 160px;
   background: var(--surface);
   border-radius: 8px;
   border: 1px solid var(--border);
@@ -177,3 +178,120 @@ main {
   white-space: nowrap;
 }
 .btn-danger:active { background: var(--accent); color: var(--text-invert); }
+
+/* Deck back stack (T14) */
+.deck-back-stack {
+  position: relative;
+  height: 96px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.card-back-layer {
+  position: absolute;
+  width: 62px;
+  height: 88px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--surface);
+}
+.card-back-layer:nth-child(1) { transform: rotate(-5deg) translate(-3px, 6px); opacity: 0.5; }
+.card-back-layer:nth-child(2) { transform: rotate(3deg) translate(2px, 3px); opacity: 0.75; }
+.card-back-layer:nth-child(3) { transform: rotate(0deg); z-index: 1; }
+.deck-empty .deck-back-stack { opacity: 0.3; }
+
+/* Card detail — type badge, description, image (T15) */
+.card-type {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-invert);
+  background: var(--accent);
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-top: 2px;
+}
+.card-description {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+.card-image {
+  width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+/* Draw animation (T18) — V14: duration from --draw-duration, no JS timers */
+@keyframes card-reveal {
+  0%   { transform: perspective(500px) rotateY(90deg); opacity: 0; }
+  60%  { transform: perspective(500px) rotateY(-8deg); opacity: 1; }
+  80%  { transform: perspective(500px) rotateY(4deg); }
+  100% { transform: perspective(500px) rotateY(0deg); }
+}
+.current-card-area.is-drawing {
+  animation: card-reveal var(--draw-duration) ease-out;
+}
+
+/* Inventory section (T17) */
+.inventory-section {
+  margin-top: calc(var(--gap) * 1.5);
+  border-top: 1px solid var(--border);
+  padding-top: var(--gap);
+}
+.inventory-heading {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--gap);
+  letter-spacing: 0.05em;
+}
+.inventory-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 480px) {
+  .inventory-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 720px) {
+  .inventory-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.inventory-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+.inventory-item-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.inventory-item-deck {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.inventory-item .card-image {
+  max-height: 80px;
+  margin-bottom: 2px;
+}
+.inventory-item .btn-danger {
+  margin-top: 4px;
+}

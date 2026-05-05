@@ -1,4 +1,4 @@
-const CACHE = 'dq-v2';
+const CACHE = 'dq-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,9 @@ const ASSETS = [
   './icons/icon.svg',
   './games/dungeonquest.json',
   './themes/dungeonquest.css',
+  './images/cards/fortune-back.svg',
+  './images/cards/chamber-back.svg',
+  './images/cards/city-back.svg',
   'https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js'
 ];
 

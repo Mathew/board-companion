@@ -47,6 +47,8 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V12 | `keep(deckId)` moves last discard entry → global inventory `{card, deckId}`; `use(idx)` moves inventory[idx] → source deck discard |
 | V13 | all card fields (`type`, `description`, `image`) and deck `backImage` optional — absent = no UI element rendered, no error |
 | V14 | card flip animation duration set by CSS var `--draw-duration` (default `1s`); no JS timers control animation length |
+| V15 | inventory items display same card detail fields (type, description, image) as drawn-card area — same `cardConfig()` lookup |
+| V16 | `.current-card-area` has `min-height` large enough to hold full card detail (name + type badge + description) without layout shift on draw |
 
 ## §T — Tasks
 
@@ -64,12 +66,14 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T10 | x | theme loader: inject `<link id="game-theme">` pointing to `themes/<id>.css` after game JSON loads; add to sw.js cache | V7,I.theme |
 | T11 | x | refactor style.css to CSS vars only (fallback defaults); create themes/dungeonquest.css — Cinzel+Crimson Text fonts, blood-red/parchment/dark-stone palette | V7,V8,I.theme |
 | T12 | x | update themes/dungeonquest.css to match DQ Revised Edition PDF — parchment interior + dark cover header; create docs/styleguide/dungeonquest.md | V7,V8,V9,I.theme |
-| T13 | . | extend JSON schema: add `backImage` per deck, add `type`/`description` to all cards in dungeonquest.json | V13,I.gamejson |
-| T14 | . | deck back-image UI: render stacked card-back using `deck.backImage` in deck-card header area | V13,I.ui |
-| T15 | . | card detail display: show `type`, `description`, `image` for last-drawn card when fields present in config | V13,I.ui |
-| T16 | . | inventory engine: global `inventory` array in store; `keep(deckId)` last-discard→inventory; `use(idx)` inventory→source-deck-discard; full reset clears inventory; localStorage extended | V11,V12,I.browser |
-| T17 | . | inventory UI: "Keep" btn on drawn card; inventory panel listing held cards with "Use" btn each; per-card deckId label | V12,I.ui |
-| T18 | . | card draw animation: CSS flip keyframes on `.deck-card`; `--draw-duration: 1s` in style.css; JS adds trigger class on draw, removes after transition ends | V14,I.ui |
+| T13 | x | extend JSON schema: add `backImage` per deck, add `type`/`description` to all cards in dungeonquest.json | V13,I.gamejson |
+| T14 | x | deck back-image UI: render stacked card-back using `deck.backImage` in deck-card header area | V13,I.ui |
+| T15 | x | card detail display: show `type`, `description`, `image` for last-drawn card when fields present in config | V13,I.ui |
+| T16 | x | inventory engine: global `inventory` array in store; `keep(deckId)` last-discard→inventory; `use(idx)` inventory→source-deck-discard; full reset clears inventory; localStorage extended | V11,V12,I.browser |
+| T17 | x | inventory UI: "Keep" btn on drawn card; inventory panel listing held cards with "Use" btn each; per-card deckId label | V12,I.ui |
+| T18 | x | card draw animation: CSS flip keyframes on `.deck-card`; `--draw-duration: 1s` in style.css; JS adds trigger class on draw, removes after transition ends | V14,I.ui |
+| T19 | x | inventory item card detail: show type badge, description, image per inventory item using `cardConfig(item.deckId, item.card)` | V13,V15,I.ui |
+| T20 | x | fix drawn-card layout shift: set `min-height` on `.current-card-area` to hold full detail without reflow | V16,I.ui |
 
 ## §B — Bug log
 

@@ -39,6 +39,15 @@
         <template x-for="deck in $store.game.decks" :key="deck.id">
           <div class="deck-card" :class="{ 'deck-empty': deck.draw.length === 0 }">
 
+            <!-- T14: deck back stack visual -->
+            <template x-if="$store.game.deckConfig(deck.id)?.backImage">
+              <div class="deck-back-stack">
+                <div class="card-back-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
+                <div class="card-back-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
+                <div class="card-back-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
+              </div>
+            </template>
+
             <div class="deck-header">
               <h2 class="deck-name" x-text="deck.name"></h2>
               <div class="deck-counts">
@@ -46,19 +55,46 @@
                 <span class="count-sep">·</span>
                 <span class="count-discard" x-text="deck.discard.length + ' discarded'"></span>
                 <span class="count-sep">·</span>
-                <span x-text="(deck.draw.length + deck.discard.length) + ' total'"></span>
+                <span x-text="(deck.draw.length + deck.discard.length) + ' in play'"></span>
               </div>
             </div>
 
-            <div class="current-card-area">
-              <div x-show="deck.discard.length > 0" class="current-card">
-                <div class="card-label">Last drawn</div>
-                <div class="card-name" x-text="deck.discard[deck.discard.length - 1]"></div>
-              </div>
+            <!-- T15+T18: drawn card detail with flip animation -->
+            <div
+              class="current-card-area"
+              :class="{ 'is-drawing': deck.animating }"
+              @animationend="deck.animating = false"
+            >
+              <!-- card shown — with optional type/description/image (V13) -->
+              <template x-if="deck.discard.length > 0">
+                <div
+                  class="current-card"
+                  x-data="{ get cfg() { return $store.game.cardConfig(deck.id, deck.discard[deck.discard.length - 1]) } }"
+                >
+                  <div class="card-label">Last drawn</div>
+                  <template x-if="cfg?.image">
+                    <img class="card-image" :src="cfg.image" :alt="deck.discard[deck.discard.length - 1]">
+                  </template>
+                  <div class="card-name" x-text="deck.discard[deck.discard.length - 1]"></div>
+                  <template x-if="cfg?.type">
+                    <span class="card-type" x-text="cfg.type"></span>
+                  </template>
+                  <template x-if="cfg?.description">
+                    <div class="card-description" x-text="cfg.description"></div>
+                  </template>
+                </div>
+              </template>
               <div x-show="deck.discard.length === 0" class="card-placeholder">
                 No cards drawn yet
               </div>
             </div>
+
+            <!-- T17: Keep button — moves last drawn to inventory -->
+            <button
+              @click="$store.game.keep(deck.id)"
+              :disabled="deck.discard.length === 0"
+              class="btn btn-secondary"
+            >Keep</button>
 
             <button
               @click="$store.game.draw(deck.id)"
@@ -81,6 +117,32 @@
           </div>
         </template>
       </div>
+
+      <!-- T17: global inventory panel -->
+      <section x-show="$store.game.inventory.length > 0" class="inventory-section">
+        <h2 class="inventory-heading">Inventory</h2>
+        <div class="inventory-grid">
+          <template x-for="(item, idx) in $store.game.inventory" :key="idx">
+            <div
+              class="inventory-item"
+              x-data="{ get cfg() { return $store.game.cardConfig(item.deckId, item.card) } }"
+            >
+              <template x-if="cfg?.image">
+                <img class="card-image" :src="cfg.image" :alt="item.card">
+              </template>
+              <div class="inventory-item-name" x-text="item.card"></div>
+              <div class="inventory-item-deck" x-text="$store.game.deckName(item.deckId)"></div>
+              <template x-if="cfg?.type">
+                <span class="card-type" x-text="cfg.type"></span>
+              </template>
+              <template x-if="cfg?.description">
+                <div class="card-description" x-text="cfg.description"></div>
+              </template>
+              <button @click="$store.game.use(idx)" class="btn btn-danger">Use</button>
+            </div>
+          </template>
+        </div>
+      </section>
     </main>
   </div>
 
