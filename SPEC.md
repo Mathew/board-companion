@@ -49,6 +49,13 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V14 | card flip animation duration set by CSS var `--draw-duration` (default `1s`); no JS timers control animation length |
 | V15 | inventory items display same card detail fields (type, description, image) as drawn-card area — same `cardConfig()` lookup |
 | V16 | `.current-card-area` has `min-height` large enough to hold full card detail (name + type badge + description) without layout shift on draw |
+| V17 | desktop layout (≥800px): 3 fixed columns — `decks-panel` (left, ~260px), `active-card-panel` (center, flex-grow), `inventory-panel` (right, ~260px); no wrapping |
+| V18 | active card is global (one per app); tracks `{card, deckId}` of last drawn across all decks; cleared on full reset; source deck name shown as badge above card |
+| V19 | deck list rows: optional `backImage` thumbnail (24×36px) left of deck name; count badges; Draw btn; per-deck Reshuffle btn (disabled when discard=0); no per-deck card detail area |
+| V20 | mobile layout (<800px): 3-tab view switcher (Decks \| Card \| Inventory); one panel visible at time; default tab = Decks |
+| V21 | "Reshuffle All Discards" btn at bottom of decks panel; reshuffles all decks with discards |
+| V22 | active card panel action btns: "Keep in Inventory" (→ keep()), "Discard" (clears active card display only), "Draw Another" (draw() from same deckId) |
+| V23 | active-card-wrap uses `justify-content: center` + fixed gap — content vertically centered in panel, not pinned top/bottom; no `margin-top: auto` on actions |
 
 ## §T — Tasks
 
@@ -74,6 +81,14 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T18 | x | card draw animation: CSS flip keyframes on `.deck-card`; `--draw-duration: 1s` in style.css; JS adds trigger class on draw, removes after transition ends | V14,I.ui |
 | T19 | x | inventory item card detail: show type badge, description, image per inventory item using `cardConfig(item.deckId, item.card)` | V13,V15,I.ui |
 | T20 | x | fix drawn-card layout shift: set `min-height` on `.current-card-area` to hold full detail without reflow | V16,I.ui |
+| T21 | x | layout refactor: 3-column CSS grid desktop (decks-panel \| active-card-panel \| inventory-panel); 3-tab mobile switcher | V17,V20,I.ui |
+| T22 | x | refactor deck list to compact rows: name + count badges + draw btn per row; remove per-deck card detail / keep / reshuffle-deck btns from rows; add "Reshuffle All Discards" at panel bottom | V19,V21,I.ui |
+| T23 | x | global active-card: add `activeCard:{card,deckId}\|null` to Alpine store; `draw()` sets it; full reset clears it; active-card-panel renders it with source deck badge | V18,I.browser |
+| T24 | x | active-card-panel actions: "Keep in Inventory" → `keep()` then clear active; "Discard" → clear active only; "Draw Another" → `draw(activeCard.deckId)` | V22,I.ui |
+| T25 | x | mobile tab switcher: `activeTab` in Alpine store (decks\|card\|inventory); tab bar at bottom; highlight active; switch on tap | V20,I.ui |
+| T26 | . | deck row icon: render `backImage` as 24×36px thumbnail left of deck name (V13 optional — absent = no element) | V13,V19,I.ui |
+| T27 | . | per-deck reshuffle btn in deck row: small secondary btn disabled when discard=0; calls `resetDeck(deck.id)` | V19,I.ui |
+| T28 | . | active card panel centering: `justify-content: center` + uniform gap on `.active-card-wrap`; remove `margin-top: auto` from actions | V23,I.ui |
 
 ## §B — Bug log
 

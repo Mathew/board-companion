@@ -4,7 +4,10 @@ document.addEventListener('alpine:init', () => {
     error: null,
     config: null,
     decks: [],
-    inventory: [],  // [{card: string, deckId: string}] — global held items (V12)
+    inventory: [],
+    activeCard: null,     // V18: {card, deckId} | null — global last-drawn card
+    activeTab: 'decks',   // V20: 'decks'|'card'|'inventory' — mobile tab state
+    drawAnimating: false, // V14: CSS flip animation trigger
 
     init() {
       this.load('games/dungeonquest.json');
@@ -19,11 +22,12 @@ document.addEventListener('alpine:init', () => {
         const saved = this.restore();
         if (saved && saved.gameId === this.config.id) {
           this.inventory = saved.inventory ?? [];
+          this.activeCard = saved.activeCard ?? null;
           this.decks = this.config.decks.map(d => {
             const s = saved.decks.find(sd => sd.id === d.id);
             return s
-              ? { id: d.id, name: d.name, draw: s.draw, discard: s.discard, animating: false }
-              : { id: d.id, name: d.name, draw: this.shuffle(this.expand(d.cards)), discard: [], animating: false };
+              ? { id: d.id, name: d.name, draw: s.draw, discard: s.discard }
+              : { id: d.id, name: d.name, draw: this.shuffle(this.expand(d.cards)), discard: [] };
           });
         } else {
           this.buildDecks();
@@ -37,12 +41,12 @@ document.addEventListener('alpine:init', () => {
 
     buildDecks() {
       this.inventory = [];
+      this.activeCard = null;
       this.decks = this.config.decks.map(d => ({
         id: d.id,
         name: d.name,
         draw: this.shuffle(this.expand(d.cards)),
-        discard: [],
-        animating: false
+        discard: []
       }));
     },
 
@@ -60,13 +64,35 @@ document.addEventListener('alpine:init', () => {
       return a;
     },
 
-    // Draw top card — no-op on empty deck (V2). Sets animating flag for CSS flip (V14).
+    // Draw top card — no-op on empty deck (V2). Sets global activeCard (V18) + animation flag (V14).
     draw(deckId) {
       const deck = this.decks.find(d => d.id === deckId);
       if (!deck || deck.draw.length === 0) return;
-      deck.discard.push(deck.draw.pop());
-      deck.animating = true;
+      const card = deck.draw.pop();
+      deck.discard.push(card);
+      this.activeCard = { card, deckId };
+      this.drawAnimating = true;
       this.persist();
+    },
+
+    // Draw another card from same deck as active card (V22)
+    drawAnother() {
+      if (!this.activeCard) return;
+      this.draw(this.activeCard.deckId);
+    },
+
+    // Clear active card display — card stays in deck.discard (V22)
+    clearActive() {
+      this.activeCard = null;
+      this.persist();
+    },
+
+    // Move active card from deck discard → inventory, then clear active (V12, V22)
+    keepActive() {
+      if (!this.activeCard) return;
+      const deckId = this.activeCard.deckId;
+      this.activeCard = null; // clear first so persist() saves null
+      this.keep(deckId);      // keep() calls persist()
     },
 
     // Move last-drawn card from deck discard → global inventory (V12)
@@ -78,7 +104,7 @@ document.addEventListener('alpine:init', () => {
       this.persist();
     },
 
-    // Consume inventory item → source deck discard (V12, V13)
+    // Consume inventory item → source deck discard (V12)
     use(idx) {
       if (idx < 0 || idx >= this.inventory.length) return;
       const [item] = this.inventory.splice(idx, 1);
@@ -87,7 +113,17 @@ document.addEventListener('alpine:init', () => {
       this.persist();
     },
 
-    // Reshuffle discards back into draw pile (inventory items from this deck remain held)
+    // Reshuffle all decks with discards — inventory items unaffected (V21)
+    reshuffleAll() {
+      this.decks.forEach(d => {
+        if (d.discard.length === 0) return;
+        d.draw = this.shuffle([...d.draw, ...d.discard]);
+        d.discard = [];
+      });
+      this.persist();
+    },
+
+    // Reshuffle single deck discards back into draw pile
     resetDeck(deckId) {
       const deck = this.decks.find(d => d.id === deckId);
       if (!deck) return;
@@ -96,13 +132,17 @@ document.addEventListener('alpine:init', () => {
       this.persist();
     },
 
-    // Full reset: rebuild all decks + clear inventory (V4)
+    // Full reset: rebuild all decks + clear inventory + clear active card (V4, V18)
     resetAll() {
       this.buildDecks();
       this.persist();
     },
 
-    // Look up deck config definition
+    // Mobile tab switcher (V20)
+    setTab(tab) {
+      this.activeTab = tab;
+    },
+
     deckConfig(deckId) {
       return this.config?.decks.find(d => d.id === deckId) ?? null;
     },
@@ -112,17 +152,17 @@ document.addEventListener('alpine:init', () => {
       return this.deckConfig(deckId)?.cards.find(c => c.name === cardName) ?? null;
     },
 
-    // Look up display name for a deck
     deckName(deckId) {
       return this.deckConfig(deckId)?.name ?? deckId;
     },
 
-    // Save runtime state to localStorage (V3) — excludes animating flag
+    // Save runtime state to localStorage (V3) — includes activeCard (V18)
     persist() {
       if (!this.config) return;
       localStorage.setItem('dq-state', JSON.stringify({
         gameId: this.config.id,
         inventory: this.inventory,
+        activeCard: this.activeCard,
         decks: this.decks.map(d => ({ id: d.id, draw: d.draw, discard: d.discard }))
       }));
     },
