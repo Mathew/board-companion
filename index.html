@@ -32,6 +32,9 @@
       <div class="header-inner">
         <h1 x-text="$store.game.config?.game ?? 'DungeonQuest'"></h1>
         <p class="header-instruction">Tap a deck to draw a card</p>
+        <template x-if="$store.game.config?.info">
+          <button @click="$store.game.openInfo()" class="btn-info-trigger" title="Adventurer's Guide">?</button>
+        </template>
         <button @click="$store.game.resetAll()" class="btn btn-danger">↺ Reset All</button>
       </div>
     </header>
@@ -200,6 +203,47 @@
     </nav>
 
   </div><!-- .app-container -->
+
+  <!-- Info panel (V31-V36) — rendered only when config.info exists -->
+  <template x-if="$store.game.config?.info">
+    <div>
+      <div
+        class="info-overlay"
+        :class="{'info-overlay-visible': $store.game.infoOpen}"
+        @click="$store.game.closeInfo()"
+      ></div>
+      <aside
+        class="info-panel"
+        :class="{'info-panel-open': $store.game.infoOpen}"
+        @keydown.escape.window="$store.game.closeInfo()"
+      >
+        <div class="info-panel-header">
+          <div class="info-panel-titles">
+            <h2 class="info-panel-title" x-text="$store.game.config.info.title"></h2>
+            <template x-if="$store.game.config.info.subtitle">
+              <p class="info-panel-subtitle" x-text="$store.game.config.info.subtitle"></p>
+            </template>
+          </div>
+          <button @click="$store.game.closeInfo()" class="info-close-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="info-panel-body">
+          <template x-for="section in $store.game.config.info.sections" :key="section.heading">
+            <div class="info-section">
+              <h3 class="info-section-heading" x-text="section.heading"></h3>
+              <template x-for="(item, idx) in section.items" :key="idx">
+                <div class="info-item">
+                  <template x-if="item.icon">
+                    <span class="info-item-icon" x-text="item.icon"></span>
+                  </template>
+                  <span class="info-item-text" x-text="item.text"></span>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </aside>
+    </div>
+  </template>
 
   <script>
     if ('serviceWorker' in navigator) {

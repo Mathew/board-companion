@@ -8,6 +8,7 @@ document.addEventListener('alpine:init', () => {
     activeCard: null,     // V18: {card, deckId} | null — global last-drawn card
     activeTab: 'decks',   // V20: 'decks'|'card'|'inventory' — mobile tab state
     drawAnimating: false, // V14: CSS flip animation trigger
+    infoOpen: false,      // V36: info panel state
 
     init() {
       this.load('games/dungeonquest.json');
@@ -144,6 +145,10 @@ document.addEventListener('alpine:init', () => {
     setTab(tab) {
       this.activeTab = tab;
     },
+
+    // Info panel (V32, V36)
+    openInfo() { this.infoOpen = true; },
+    closeInfo() { this.infoOpen = false; },
 
     deckConfig(deckId) {
       return this.config?.decks.find(d => d.id === deckId) ?? null;

@@ -23,7 +23,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | id | surface | notes |
 |----|---------|-------|
 | I.browser | Browser localStorage | persist runtime deck state (draw order, discards, inventory) |
-| I.gamejson | `games/<name>.json` | deck defs: `backImage` per deck; cards with `name`, `count`, optional `type`/`description`/`image` |
+| I.gamejson | `games/<name>.json` | deck defs: `backImage` per deck; cards with `name`, `count`, optional `type`/`description`/`image`; optional root-level `info` obj for guide panel |
 | I.pwa | Web App Manifest + Service Worker | installable, offline |
 | I.ghpages | GitHub Pages | static deploy, root or /docs |
 | I.ui | Touch-friendly UI | draw on tap, reset controls |
@@ -63,6 +63,14 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V28 | mobile tab label for card tab = "Active" (not "Card") |
 | V29 | buttons inside flex-row containers (`.header-inner`) must override `.btn { width: 100% }` with `width: auto; flex-shrink: 0` — `.btn` full-width default is for column layouts only |
 | V30 | activeCard cleared on reshuffleAll(); cleared on resetDeck(deckId) when activeCard?.deckId === deckId — supersedes "cleared on full reset" scope of V18 |
+| V31 | `info` field in game JSON is optional at root level; absent = no `?` btn rendered, panel never shown |
+| V32 | `?` btn in header right triggers info panel; dismisses via X btn, click/tap outside panel, or ESC key |
+| V33 | desktop (≥800px): panel slides in from right as fixed overlay (translateX 100%→0); mobile (<800px): sheet slides up from bottom (translateY 100%→0) |
+| V34 | info panel styled with active theme CSS vars (`--color-surface`, `--color-border`, `--font-heading`, `--font-body`); no hardcoded colors |
+| V35 | `info` JSON shape: `{ "title": string, "subtitle"?: string, "sections": [{ "heading": string, "items": [{ "icon"?: string, "text": string }] }] }` |
+| V36 | `infoOpen: boolean` in Alpine store; false on init; toggled by openInfo()/closeInfo(); does not affect deck/card/inventory state |
+| V37 | mobile info-panel CSS must set `max-width: 100%` (or `none`) to override desktop `max-width: 95vw`; panel must be exactly viewport-width with no left gap |
+| V38 | inventory has no max-size cap; `keep()` never rejects; guide text must not reference any item limit |
 
 ## §T — Tasks
 
@@ -103,6 +111,13 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T33 | x | header instruction text centered desktop-only; relabel mobile card tab "Active" | V27,V28,I.ui |
 | T34 | x | fix header layout: `.header-inner .btn` → `width: auto; flex-shrink: 0`; `header h1` → `white-space: nowrap`; instruction text fills flex center | V27,V29,I.ui |
 | T35 | x | fix reshuffleAll() + resetDeck() to null activeCard per V30 | V18,V30 |
+| T36 | x | extend game JSON: add optional root-level `info` obj; populate dungeonquest.json Adventurer's Guide (How to Use + Expected Use from the Box sections) | V31,V35,I.gamejson |
+| T37 | x | Alpine store: add `infoOpen: false`, `openInfo()`, `closeInfo()`; `?` btn in header renders only when `config.info` present | V31,V32,V36 |
+| T38 | x | info panel HTML: fixed overlay, parchment-styled, title (Cinzel), optional subtitle, section headings + item list with optional icon; X close btn top-right; click-outside + ESC dismiss | V32,V34,V35,I.ui |
+| T39 | x | desktop CSS: `.info-panel` fixed right drawer (width ~380px, full height); transform translateX(100%)→(0) on open; transition 0.3s ease; semi-transparent backdrop overlay | V33,V34,I.ui |
+| T40 | x | mobile CSS (<800px): `.info-panel` fixed bottom sheet (height ~70vh, full width); transform translateY(100%)→(0) on open; border-radius top corners; same transition | V33,V34,I.ui |
+| T41 | x | fix mobile info-panel: add `max-width: 100%` to mobile media query override — removes left gap caused by inherited desktop `max-width: 95vw` | V37,I.ui |
+| T42 | x | remove "eight cards max" from dungeonquest.json guide text; update to describe unlimited inventory; remove any other hardcoded limit references | V38,I.gamejson |
 
 ## §B — Bug log
 
@@ -111,3 +126,5 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | B1 | 2026-05-04 | theme CSS injected after async JSON fetch — style.css dark fallbacks paint first (FOUC) | pre-link theme in HTML head; applyTheme skips re-inject if href unchanged (V10) |
 | B2 | 2026-05-06 | `.btn { width: 100% }` in flex-row header squashes `.header-instruction` — Reset All btn expands, no room for centered text | T34, V29 |
 | B3 | 2026-05-06 | reshuffleAll()/resetDeck() don't clear activeCard — drawn card returns to draw pile while still shown active | V30 |
+| B4 | 2026-05-06 | mobile `.info-panel` inherits desktop `max-width: 95vw`; mobile query sets `width: 100%` but not `max-width` → panel is 95vw wide with `right:0`, 5vw gap left | V37 |
+| B5 | 2026-05-06 | guide text "eight cards max" is inaccurate — no cap enforced in `keep()`; inventory should be unlimited per game design | V38 |

@@ -3,6 +3,30 @@
   "game": "DungeonQuest",
   "edition": "Fantasy Flight Games Revised Edition",
   "_note": "Verify card names and counts against your physical copy. Edit this file to match.",
+  "info": {
+    "title": "Adventurer's Guide",
+    "subtitle": "How to use this companion app with DungeonQuest.",
+    "sections": [
+      {
+        "heading": "How to Use",
+        "items": [
+          { "icon": "🃏", "text": "Tap any deck on the left to draw a card. The card appears in the Active Card area." },
+          { "icon": "📖", "text": "Read the card and follow its instructions. Use the buttons below to Keep it, Discard it, or Draw Another." },
+          { "icon": "🎒", "text": "Cards you keep are added to your Inventory — items, allies, and boons you currently hold. Tap any inventory card to use it." },
+          { "icon": "🔄", "text": "Discarded cards go to each deck's discard pile. When a deck is empty, tap ↺ to reshuffle the discard pile and continue." }
+        ]
+      },
+      {
+        "heading": "Expected Use from the Box",
+        "items": [
+          { "icon": "📚", "text": "Adventure Book — Use for setting up the quest, reading story text, and resolving special instructions." },
+          { "icon": "🃏", "text": "Cards — Use this app to manage and draw from the Fortune Deck, Chamber Deck, City Event Deck, and Trap Deck." },
+          { "icon": "🎭", "text": "Miniatures & Tokens — Use your miniatures and tokens on the board as normal to represent heroes, monsters, and game state." },
+          { "icon": "🎲", "text": "Dice — Use physical dice for skill checks, combat, and other rolls as described in the rules." }
+        ]
+      }
+    ]
+  },
   "decks": [
     {
       "id": "fortune",
