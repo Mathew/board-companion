@@ -7,6 +7,7 @@
     {
       "id": "fortune",
       "name": "Fortune Deck",
+      "description": "Weapons, armour, treasure, and curses — fortune favours the bold.",
       "backImage": "images/cards/fortune-back.svg",
       "cards": [
         { "name": "5 Gold Pieces",      "count": 4, "type": "treasure",   "description": "A small purse of gold coins, clinking with promise." },
@@ -32,6 +33,7 @@
     {
       "id": "chamber",
       "name": "Chamber Deck",
+      "description": "Draw to reveal what stirs in the dragon's lair.",
       "backImage": "images/cards/chamber-back.svg",
       "cards": [
         { "name": "Dragon Asleep",   "count": 4, "type": "event", "description": "The great wyrm slumbers. Move quietly — do not disturb." },
@@ -47,6 +49,7 @@
     {
       "id": "city",
       "name": "City Event Deck",
+      "description": "Encounters and events from the city beyond the dungeon.",
       "backImage": "images/cards/city-back.svg",
       "cards": [
         { "name": "Market Day",          "count": 3, "type": "event", "description": "The city square is crowded. Buy any equipment at half price." },
@@ -65,6 +68,7 @@
     {
       "id": "trap",
       "name": "Trap Deck",
+      "description": "Deadly traps lay in wait around every corner.",
       "backImage": "images/cards/trap-back.svg",
       "cards": [
         { "name": "Market Day",          "count": 3, "type": "event", "description": "The city square is crowded. Buy any equipment at half price." },

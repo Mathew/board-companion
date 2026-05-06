@@ -31,36 +31,51 @@
     <header>
       <div class="header-inner">
         <h1 x-text="$store.game.config?.game ?? 'DungeonQuest'"></h1>
-        <button @click="$store.game.resetAll()" class="btn btn-danger">Reset All</button>
+        <p class="header-instruction">Tap a deck to draw a card</p>
+        <button @click="$store.game.resetAll()" class="btn btn-danger">↺ Reset All</button>
       </div>
     </header>
 
     <div class="app-layout">
 
-      <!-- Left: Compact deck list (V19, V21) -->
+      <!-- Left: Visual deck list (V19, V21, V24) -->
       <aside class="decks-panel" :class="{'panel-active': $store.game.activeTab === 'decks'}">
         <h2 class="panel-heading">Decks</h2>
         <div class="decks-list">
           <template x-for="deck in $store.game.decks" :key="deck.id">
-            <div class="deck-row" :class="{'deck-row-empty': deck.draw.length === 0}">
-              <div class="deck-row-info">
-                <span class="deck-row-name" x-text="deck.name"></span>
-                <div class="deck-row-counts">
-                  <span class="count-remain" x-text="deck.draw.length"></span>
-                  <span class="count-label">left</span>
+            <div
+              class="deck-entry"
+              :class="{
+                'deck-entry-active': $store.game.activeCard?.deckId === deck.id,
+                'deck-entry-empty': deck.draw.length === 0
+              }"
+              @click="if (deck.draw.length > 0) { $store.game.draw(deck.id); $store.game.setTab('card') }"
+            >
+              <template x-if="$store.game.deckConfig(deck.id)?.backImage">
+                <div class="deck-stack">
+                  <div class="deck-stack-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
+                  <div class="deck-stack-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
+                  <div class="deck-stack-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
+                </div>
+              </template>
+              <div class="deck-entry-info">
+                <div class="deck-entry-name" x-text="deck.name"></div>
+                <template x-if="$store.game.deckConfig(deck.id)?.description">
+                  <div class="deck-entry-desc" x-text="$store.game.deckConfig(deck.id).description"></div>
+                </template>
+                <div class="deck-entry-counts">
+                  <span class="deck-count-remain" x-text="deck.draw.length + ' left'"></span>
                   <template x-if="deck.discard.length > 0">
-                    <span class="count-sep">·</span>
-                  </template>
-                  <template x-if="deck.discard.length > 0">
-                    <span x-text="deck.discard.length + ' disc'"></span>
+                    <span class="deck-count-discard" x-text="'· ' + deck.discard.length + ' disc'"></span>
                   </template>
                 </div>
               </div>
               <button
-                @click="$store.game.draw(deck.id); $store.game.setTab('card')"
-                :disabled="deck.draw.length === 0"
-                class="btn btn-draw btn-sm"
-              >Draw</button>
+                @click.stop="$store.game.resetDeck(deck.id)"
+                :disabled="deck.discard.length === 0"
+                class="btn btn-secondary btn-sm deck-entry-reshuffle"
+                title="Reshuffle discards into deck"
+              >↺</button>
             </div>
           </template>
         </div>
@@ -68,51 +83,65 @@
           @click="$store.game.reshuffleAll()"
           :disabled="$store.game.decks.every(d => d.discard.length === 0)"
           class="btn btn-secondary reshuffle-all-btn"
-        >Reshuffle All Discards</button>
+        >↺ Reshuffle All Discards</button>
       </aside>
 
-      <!-- Center: Global active card (V18, V22) -->
+      <!-- Center: Global active card (V18, V22, V25) -->
       <section class="active-card-panel" :class="{'panel-active': $store.game.activeTab === 'card'}">
+        <h2 class="panel-heading">Active Card</h2>
         <template x-if="$store.game.activeCard">
           <div
             class="active-card-wrap"
             :class="{'is-drawing': $store.game.drawAnimating}"
             @animationend="$store.game.drawAnimating = false"
           >
-            <div class="active-card-source" x-text="$store.game.deckName($store.game.activeCard.deckId)"></div>
             <div
-              class="active-card-detail"
+              class="card-frame"
               x-data="{ get cfg() { return $store.game.cardConfig($store.game.activeCard.deckId, $store.game.activeCard.card) } }"
             >
-              <template x-if="cfg?.image">
-                <img class="active-card-image" :src="cfg.image" :alt="$store.game.activeCard.card">
-              </template>
-              <div class="active-card-name" x-text="$store.game.activeCard.card"></div>
-              <template x-if="cfg?.type">
-                <span class="card-type" x-text="cfg.type"></span>
-              </template>
-              <template x-if="cfg?.description">
-                <div class="card-description active-card-desc" x-text="cfg.description"></div>
-              </template>
+              <div class="card-frame-name" x-text="$store.game.activeCard.card"></div>
+              <div class="card-frame-body">
+                <template x-if="cfg?.image">
+                  <img class="card-frame-image" :src="cfg.image" :alt="$store.game.activeCard.card">
+                </template>
+                <div
+                  x-show="!cfg?.image"
+                  class="card-frame-art-placeholder"
+                  :style="$store.game.deckConfig($store.game.activeCard.deckId)?.backImage
+                    ? `background-image:url('${$store.game.deckConfig($store.game.activeCard.deckId).backImage}')`
+                    : ''"
+                ></div>
+                <template x-if="cfg?.description">
+                  <div class="card-frame-description" x-text="cfg.description"></div>
+                </template>
+              </div>
+              <div class="card-frame-footer">
+                <template x-if="cfg?.type">
+                  <span class="card-type" x-text="cfg.type"></span>
+                </template>
+              </div>
+            </div>
+            <div class="active-card-from">
+              From: <strong x-text="$store.game.deckName($store.game.activeCard.deckId)"></strong>
             </div>
             <div class="active-card-actions">
-              <button @click="$store.game.keepActive()" class="btn btn-secondary">Keep in Inventory</button>
-              <button @click="$store.game.clearActive()" class="btn btn-secondary">Discard</button>
+              <button @click="$store.game.keepActive()" class="btn btn-action-keep">📦 Keep in Inventory</button>
+              <button @click="$store.game.clearActive()" class="btn btn-action-discard">🗑 Discard</button>
               <button
                 @click="$store.game.drawAnother()"
                 :disabled="$store.game.decks.find(d => d.id === $store.game.activeCard.deckId)?.draw.length === 0"
-                class="btn btn-draw"
-              >Draw Another</button>
+                class="btn btn-action-draw"
+              >🎴 Draw Another</button>
             </div>
           </div>
         </template>
         <div x-show="!$store.game.activeCard" class="active-card-empty">
           <p>No card drawn</p>
-          <p class="text-dim">Draw from any deck</p>
+          <p class="text-dim">Tap any deck to draw</p>
         </div>
       </section>
 
-      <!-- Right: Inventory panel (V15, V12) -->
+      <!-- Right: Inventory panel (V12, V15, V26) -->
       <aside class="inventory-panel" :class="{'panel-active': $store.game.activeTab === 'inventory'}">
         <h2 class="panel-heading">
           Inventory
@@ -129,6 +158,9 @@
               class="inventory-row"
               x-data="{ get cfg() { return $store.game.cardConfig(item.deckId, item.card) } }"
             >
+              <div class="inv-thumb" :class="'inv-type-' + (cfg?.type ?? 'default')">
+                <span x-text="(cfg?.type ?? '?').charAt(0).toUpperCase()"></span>
+              </div>
               <div class="inventory-row-body">
                 <span class="inventory-row-name" x-text="item.card"></span>
                 <span class="inventory-row-deck" x-text="$store.game.deckName(item.deckId)"></span>
@@ -140,11 +172,15 @@
             </div>
           </template>
         </div>
+        <button
+          class="btn btn-secondary view-all-btn"
+          @click="$store.game.setTab('inventory')"
+        >View Full Inventory</button>
       </aside>
 
     </div><!-- .app-layout -->
 
-    <!-- Mobile tab bar (V20) -->
+    <!-- Mobile tab bar (V20, V28) -->
     <nav class="tab-bar">
       <button
         @click="$store.game.setTab('decks')"
@@ -155,7 +191,7 @@
         @click="$store.game.setTab('card')"
         :class="{'tab-active': $store.game.activeTab === 'card'}"
         class="tab-btn"
-      >Card<span x-show="$store.game.activeCard" class="tab-indicator"></span></button>
+      >Active<span x-show="$store.game.activeCard" class="tab-indicator"></span></button>
       <button
         @click="$store.game.setTab('inventory')"
         :class="{'tab-active': $store.game.activeTab === 'inventory'}"

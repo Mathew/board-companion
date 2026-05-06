@@ -51,11 +51,17 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V16 | `.current-card-area` has `min-height` large enough to hold full card detail (name + type badge + description) without layout shift on draw |
 | V17 | desktop layout (≥800px): 3 fixed columns — `decks-panel` (left, ~260px), `active-card-panel` (center, flex-grow), `inventory-panel` (right, ~260px); no wrapping |
 | V18 | active card is global (one per app); tracks `{card, deckId}` of last drawn across all decks; cleared on full reset; source deck name shown as badge above card |
-| V19 | deck list rows: optional `backImage` thumbnail (24×36px) left of deck name; count badges; Draw btn; per-deck Reshuffle btn (disabled when discard=0); no per-deck card detail area |
+| V19 | deck panel entries = visual card block: large `backImage` stack left, deck name, optional deck `description`, remaining+discard count badges; clicking entire block = `draw(deckId)` + `setTab('card')`; active deck (matches `activeCard.deckId`) gets accent border; per-deck reshuffle ↺ btn present but compact |
 | V20 | mobile layout (<800px): 3-tab view switcher (Decks \| Card \| Inventory); one panel visible at time; default tab = Decks |
 | V21 | "Reshuffle All Discards" btn at bottom of decks panel; reshuffles all decks with discards |
 | V22 | active card panel action btns: "Keep in Inventory" (→ keep()), "Discard" (clears active card display only), "Draw Another" (draw() from same deckId) |
 | V23 | active-card-wrap uses `justify-content: center` + fixed gap — content vertically centered in panel, not pinned top/bottom; no `margin-top: auto` on actions |
+| V24 | deck JSON may have optional `description` string at deck level; absent = no description rendered (same rule as V13 for card fields) |
+| V25 | active card panel renders card as game-card frame: image (if present) else blank art area, card name, type badge, description, "FROM: [deckName]" label below frame; KEEP / DISCARD / DRAW ANOTHER buttons styled with emoji/icon prefix |
+| V26 | inventory panel items = mini card thumbnail layout: small image or type-badge-colored placeholder, card name, brief description clipped to 1 line; "View Full Inventory" link at panel bottom |
+| V27 | header shows instruction text "Tap a deck to draw a card" centered on desktop (≥800px); hidden on mobile |
+| V28 | mobile tab label for card tab = "Active" (not "Card") |
+| V29 | buttons inside flex-row containers (`.header-inner`) must override `.btn { width: 100% }` with `width: auto; flex-shrink: 0` — `.btn` full-width default is for column layouts only |
 
 ## §T — Tasks
 
@@ -86,12 +92,19 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T23 | x | global active-card: add `activeCard:{card,deckId}\|null` to Alpine store; `draw()` sets it; full reset clears it; active-card-panel renders it with source deck badge | V18,I.browser |
 | T24 | x | active-card-panel actions: "Keep in Inventory" → `keep()` then clear active; "Discard" → clear active only; "Draw Another" → `draw(activeCard.deckId)` | V22,I.ui |
 | T25 | x | mobile tab switcher: `activeTab` in Alpine store (decks\|card\|inventory); tab bar at bottom; highlight active; switch on tap | V20,I.ui |
-| T26 | . | deck row icon: render `backImage` as 24×36px thumbnail left of deck name (V13 optional — absent = no element) | V13,V19,I.ui |
-| T27 | . | per-deck reshuffle btn in deck row: small secondary btn disabled when discard=0; calls `resetDeck(deck.id)` | V19,I.ui |
-| T28 | . | active card panel centering: `justify-content: center` + uniform gap on `.active-card-wrap`; remove `margin-top: auto` from actions | V23,I.ui |
+| T26 | x | deck row icon: render `backImage` as 24×36px thumbnail left of deck name (V13 optional — absent = no element) | V13,V19,I.ui |
+| T27 | x | per-deck reshuffle btn in deck row: small secondary btn disabled when discard=0; calls `resetDeck(deck.id)` | V19,I.ui |
+| T28 | x | active card panel centering: `justify-content: center` + uniform gap on `.active-card-wrap`; remove `margin-top: auto` from actions | V23,I.ui |
+| T29 | x | add optional `description` field to deck schema; populate in dungeonquest.json for all 4 decks | V24,I.gamejson |
+| T30 | x | gamify deck panel: replace compact rows with visual card blocks (large backImage stack, name, description, count badges, click-to-draw, active-deck accent border, compact ↺ btn) | V19,V24,I.ui |
+| T31 | x | gamify active card: game-card frame display (image or placeholder, name, type, description, FROM label); styled KEEP/DISCARD/DRAW ANOTHER buttons | V25,I.ui |
+| T32 | x | gamify inventory: mini card thumbnail rows (type-colored placeholder, name, 1-line description); "View Full Inventory" btn | V26,I.ui |
+| T33 | x | header instruction text centered desktop-only; relabel mobile card tab "Active" | V27,V28,I.ui |
+| T34 | x | fix header layout: `.header-inner .btn` → `width: auto; flex-shrink: 0`; `header h1` → `white-space: nowrap`; instruction text fills flex center | V27,V29,I.ui |
 
 ## §B — Bug log
 
 | id | date | cause | fix |
 |----|------|-------|-----|
 | B1 | 2026-05-04 | theme CSS injected after async JSON fetch — style.css dark fallbacks paint first (FOUC) | pre-link theme in HTML head; applyTheme skips re-inject if href unchanged (V10) |
+| B2 | 2026-05-06 | `.btn { width: 100% }` in flex-row header squashes `.header-instruction` — Reset All btn expands, no room for centered text | T34, V29 |

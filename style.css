@@ -39,7 +39,7 @@ body {
 }
 .error-banner { color: var(--accent); flex-direction: column; gap: 8px; }
 
-/* ---------- App container — V17: fixed 3-col desktop, tab-switched mobile ---------- */
+/* ---------- App container (V17) ---------- */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@ body {
   overflow: hidden;
 }
 
-/* ---------- Header ---------- */
+/* ---------- Header (V27) ---------- */
 header {
   flex-shrink: 0;
   background: var(--surface);
@@ -67,20 +67,36 @@ header h1 {
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.header-inner .btn {
+  width: auto;
+  flex-shrink: 0;
+}
+.header-instruction {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  display: none;
+  text-align: center;
+  flex: 1;
+}
+@media (min-width: 800px) {
+  .header-instruction { display: block; }
 }
 
 /* ---------- App layout ---------- */
 .app-layout {
   flex: 1;
   min-height: 0;
-  display: flex;       /* mobile: single column */
+  display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 800px) {
   .app-layout {
     display: grid;
-    grid-template-columns: 260px 1fr 260px;
+    grid-template-columns: 280px 1fr 260px;
     gap: var(--gap);
     padding: var(--gap);
     overflow: hidden;
@@ -143,114 +159,179 @@ header h1 {
   letter-spacing: 0;
 }
 
-/* ---------- Deck rows — compact (V19) ---------- */
+/* ---------- Deck entries — visual card blocks (V19, V24) ---------- */
 .decks-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
-.deck-row {
+.deck-entry {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 10px 10px 10px 12px;
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  transition: border-color 0.2s;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.deck-row.deck-row-empty { opacity: 0.6; border-color: var(--empty); }
+.deck-entry:not(.deck-entry-empty):hover { border-color: var(--accent); }
+.deck-entry.deck-entry-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.deck-entry.deck-entry-empty { opacity: 0.6; cursor: not-allowed; }
 
-.deck-row-info {
+/* Card stack visual (T30) */
+.deck-stack {
+  position: relative;
+  width: 52px;
+  height: 76px;
+  flex-shrink: 0;
+}
+.deck-stack-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 68px;
+  border-radius: 5px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+.deck-stack-layer:nth-child(1) { transform: rotate(-5deg) translate(-2px, 7px); opacity: 0.45; }
+.deck-stack-layer:nth-child(2) { transform: rotate(3deg) translate(2px, 4px); opacity: 0.7; }
+.deck-stack-layer:nth-child(3) { z-index: 1; }
+.deck-entry-empty .deck-stack { opacity: 0.35; }
+
+.deck-entry-info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
-.deck-row-name {
-  font-size: 0.88rem;
-  font-weight: 600;
+.deck-entry-name {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.deck-row-counts {
-  font-size: 0.72rem;
+.deck-entry-desc {
+  font-size: 0.71rem;
   color: var(--text-dim);
-  display: flex;
-  gap: 3px;
-  align-items: center;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.count-remain { font-weight: 700; color: var(--text); }
-.count-label { color: var(--text-dim); }
-.count-sep { color: var(--border); }
+.deck-entry-counts {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.deck-count-remain { font-size: 0.74rem; font-weight: 700; color: var(--text); }
+.deck-count-discard { font-size: 0.72rem; color: var(--text-dim); }
 
+.deck-entry-reshuffle { flex-shrink: 0; align-self: flex-start; }
 .reshuffle-all-btn { flex-shrink: 0; }
 
-/* ---------- Active card panel (V18, V22) ---------- */
+/* ---------- Active card panel (V18, V23, V25) ---------- */
 .active-card-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   flex: 1;
   min-height: 0;
   padding: 8px 0;
 }
-.active-card-source {
-  font-family: var(--font-heading);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-invert);
-  background: var(--accent);
-  padding: 3px 14px;
-  border-radius: 20px;
-  flex-shrink: 0;
-}
-.active-card-detail {
+
+/* Game card frame (V25) */
+.card-frame {
+  width: 100%;
+  max-width: 220px;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-}
-.active-card-image {
-  width: 100%;
-  max-width: 260px;
-  max-height: 240px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid var(--border);
   flex-shrink: 0;
 }
-.active-card-name {
+.card-frame-name {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
+  padding: 9px 12px 7px;
+  border-bottom: 1px solid var(--border);
   text-align: center;
 }
-.active-card-desc {
-  font-size: 0.95rem;
-  max-width: 340px;
+.card-frame-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
 }
+.card-frame-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.card-frame-art-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: linear-gradient(160deg, var(--surface) 0%, var(--border) 100%);
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  opacity: 0.5;
+}
+.card-frame-description {
+  font-size: 0.84rem;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.5;
+  text-align: center;
+}
+.card-frame-footer {
+  padding: 7px 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  min-height: 32px;
+  align-items: center;
+}
+.active-card-from {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.active-card-from strong { color: var(--text); }
+
 .active-card-actions {
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 320px;
+  max-width: 280px;
   flex-shrink: 0;
-  margin-top: auto;
 }
+
 .active-card-empty {
   flex: 1;
   display: flex;
@@ -264,7 +345,7 @@ header h1 {
 }
 .text-dim { color: var(--text-dim); font-size: 0.85rem; }
 
-/* ---------- Inventory panel ---------- */
+/* ---------- Inventory panel (V26) ---------- */
 .inventory-list {
   display: flex;
   flex-direction: column;
@@ -273,8 +354,8 @@ header h1 {
 .inventory-row {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: 10px;
+  padding: 8px 10px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -292,16 +373,20 @@ header h1 {
   color: var(--accent);
 }
 .inventory-row-deck {
-  font-size: 0.65rem;
+  font-size: 0.64rem;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
 .inventory-row-desc {
-  font-size: 0.77rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
   font-style: italic;
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .inventory-empty-msg {
   color: var(--text-dim);
@@ -310,7 +395,34 @@ header h1 {
   padding: 24px 0;
 }
 
-/* ---------- Mobile tab bar (V20) ---------- */
+/* Type-colored card thumbnail (V26) */
+.inv-thumb {
+  width: 34px;
+  height: 50px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+}
+.inv-type-treasure   { background: #7A5210; }
+.inv-type-weapon     { background: #3A3A58; }
+.inv-type-armor      { background: #1A3A5A; }
+.inv-type-consumable { background: #1E4E1E; }
+.inv-type-magic      { background: #3C1A5C; }
+.inv-type-curse      { background: #5A1008; }
+.inv-type-event      { background: #4A3010; }
+.inv-type-nothing    { background: #3A3A3A; }
+.inv-type-default    { background: #444; }
+
+.view-all-btn { flex-shrink: 0; margin-top: 4px; }
+
+/* ---------- Mobile tab bar (V20, V28) ---------- */
 .tab-bar {
   flex-shrink: 0;
   display: flex;
@@ -407,6 +519,34 @@ header h1 {
   font-size: 0.85rem;
   min-height: 36px;
 }
+
+/* Styled action buttons for active card (V25) */
+.btn-action-keep {
+  background: #2A5C2A;
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: left;
+  padding-left: 16px;
+}
+.btn-action-keep:not(:disabled):active { background: #1E4A1E; }
+
+.btn-action-discard {
+  background: var(--accent-dim);
+  color: var(--text-invert);
+  font-size: 0.95rem;
+  text-align: left;
+  padding-left: 16px;
+}
+.btn-action-discard:not(:disabled):active { background: var(--accent); }
+
+.btn-action-draw {
+  background: #1E4A6A;
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: left;
+  padding-left: 16px;
+}
+.btn-action-draw:not(:disabled):active { background: #163858; }
 
 /* ---------- Card type badge + description ---------- */
 .card-type {
