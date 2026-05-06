@@ -120,6 +120,7 @@ document.addEventListener('alpine:init', () => {
         d.draw = this.shuffle([...d.draw, ...d.discard]);
         d.discard = [];
       });
+      this.activeCard = null; // V30
       this.persist();
     },
 
@@ -129,6 +130,7 @@ document.addEventListener('alpine:init', () => {
       if (!deck) return;
       deck.draw = this.shuffle([...deck.draw, ...deck.discard]);
       deck.discard = [];
+      if (this.activeCard?.deckId === deckId) this.activeCard = null; // V30
       this.persist();
     },
 

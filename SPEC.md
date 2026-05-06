@@ -62,6 +62,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V27 | header shows instruction text "Tap a deck to draw a card" centered on desktop (≥800px); hidden on mobile |
 | V28 | mobile tab label for card tab = "Active" (not "Card") |
 | V29 | buttons inside flex-row containers (`.header-inner`) must override `.btn { width: 100% }` with `width: auto; flex-shrink: 0` — `.btn` full-width default is for column layouts only |
+| V30 | activeCard cleared on reshuffleAll(); cleared on resetDeck(deckId) when activeCard?.deckId === deckId — supersedes "cleared on full reset" scope of V18 |
 
 ## §T — Tasks
 
@@ -101,6 +102,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T32 | x | gamify inventory: mini card thumbnail rows (type-colored placeholder, name, 1-line description); "View Full Inventory" btn | V26,I.ui |
 | T33 | x | header instruction text centered desktop-only; relabel mobile card tab "Active" | V27,V28,I.ui |
 | T34 | x | fix header layout: `.header-inner .btn` → `width: auto; flex-shrink: 0`; `header h1` → `white-space: nowrap`; instruction text fills flex center | V27,V29,I.ui |
+| T35 | x | fix reshuffleAll() + resetDeck() to null activeCard per V30 | V18,V30 |
 
 ## §B — Bug log
 
@@ -108,3 +110,4 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 |----|------|-------|-----|
 | B1 | 2026-05-04 | theme CSS injected after async JSON fetch — style.css dark fallbacks paint first (FOUC) | pre-link theme in HTML head; applyTheme skips re-inject if href unchanged (V10) |
 | B2 | 2026-05-06 | `.btn { width: 100% }` in flex-row header squashes `.header-instruction` — Reset All btn expands, no room for centered text | T34, V29 |
+| B3 | 2026-05-06 | reshuffleAll()/resetDeck() don't clear activeCard — drawn card returns to draw pile while still shown active | V30 |
