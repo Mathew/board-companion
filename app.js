@@ -9,6 +9,7 @@ document.addEventListener('alpine:init', () => {
     activeTab: 'decks',   // V20: 'decks'|'card'|'inventory' — mobile tab state
     drawAnimating: false, // V14: CSS flip animation trigger
     infoOpen: false,      // V36: info panel state
+    combatState: null,    // V43: null | { card, deckId, health, maxHealth, attribute_type, escape_penalty, status }
 
     init() {
       this.load('games/dungeonquest.json');
@@ -24,6 +25,7 @@ document.addEventListener('alpine:init', () => {
         if (saved && saved.gameId === this.config.id) {
           this.inventory = saved.inventory ?? [];
           this.activeCard = saved.activeCard ?? null;
+          this.combatState = saved.combatState ?? null;
           this.decks = this.config.decks.map(d => {
             const s = saved.decks.find(sd => sd.id === d.id);
             return s
@@ -43,6 +45,7 @@ document.addEventListener('alpine:init', () => {
     buildDecks() {
       this.inventory = [];
       this.activeCard = null;
+      this.combatState = null; // V43
       this.decks = this.config.decks.map(d => ({
         id: d.id,
         name: d.name,
@@ -66,6 +69,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // Draw top card — no-op on empty deck (V2). Sets global activeCard (V18) + animation flag (V14).
+    // Checks triggers: combat trigger sets combatState (V42).
     draw(deckId) {
       const deck = this.decks.find(d => d.id === deckId);
       if (!deck || deck.draw.length === 0) return;
@@ -73,6 +77,19 @@ document.addEventListener('alpine:init', () => {
       deck.discard.push(card);
       this.activeCard = { card, deckId };
       this.drawAnimating = true;
+      const cfg = this.cardConfig(deckId, card);
+      const combatTrigger = cfg?.triggers?.find(t => t.type === 'combat');
+      if (combatTrigger) {
+        this.combatState = {
+          card,
+          deckId,
+          health: combatTrigger.health,
+          maxHealth: combatTrigger.health,
+          attribute_type: combatTrigger.attribute_type,
+          escape_penalty: combatTrigger.escape_penalty,
+          status: 'active'
+        };
+      }
       this.persist();
     },
 
@@ -150,6 +167,31 @@ document.addEventListener('alpine:init', () => {
     openInfo() { this.infoOpen = true; },
     closeInfo() { this.infoOpen = false; },
 
+    // Combat (V42-V46)
+    dealDamage(n) {
+      if (!this.combatState || this.combatState.status !== 'active') return;
+      this.combatState.health = Math.max(0, this.combatState.health - n);
+      if (this.combatState.health <= 0) this.combatState.status = 'victory';
+      this.persist();
+    },
+
+    fleeCombat() {
+      if (!this.combatState) return;
+      this.combatState.status = 'fled';
+      this.persist();
+    },
+
+    playerDied() {
+      if (!this.combatState) return;
+      this.combatState.status = 'died';
+      this.persist();
+    },
+
+    dismissCombat() {
+      this.combatState = null;
+      this.persist();
+    },
+
     deckConfig(deckId) {
       return this.config?.decks.find(d => d.id === deckId) ?? null;
     },
@@ -170,6 +212,7 @@ document.addEventListener('alpine:init', () => {
         gameId: this.config.id,
         inventory: this.inventory,
         activeCard: this.activeCard,
+        combatState: this.combatState,
         decks: this.decks.map(d => ({ id: d.id, draw: d.draw, discard: d.discard }))
       }));
     },

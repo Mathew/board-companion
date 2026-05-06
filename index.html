@@ -204,6 +204,84 @@
 
   </div><!-- .app-container -->
 
+  <!-- Combat overlay (V42-V46) -->
+  <template x-if="$store.game.combatState">
+    <div class="combat-overlay">
+
+      <!-- Active combat screen -->
+      <template x-if="$store.game.combatState.status === 'active'">
+        <div
+          class="combat-card"
+          x-data="{ get cfg() { return $store.game.cardConfig($store.game.combatState.deckId, $store.game.combatState.card) } }"
+        >
+          <div class="combat-header">
+            <div class="combat-label">⚔ Combat</div>
+            <div class="combat-attribute" x-text="$store.game.combatState.attribute_type + ' Check'"></div>
+          </div>
+          <div class="combat-monster-name" x-text="$store.game.combatState.card"></div>
+          <template x-if="cfg?.image">
+            <img class="combat-monster-image" :src="cfg.image" :alt="$store.game.combatState.card">
+          </template>
+          <div
+            x-show="!cfg?.image"
+            class="combat-monster-placeholder"
+            :style="$store.game.deckConfig($store.game.combatState.deckId)?.backImage
+              ? `background-image:url('${$store.game.deckConfig($store.game.combatState.deckId).backImage}')`
+              : ''"
+          ></div>
+          <div class="combat-actions">
+            <button @click="$store.game.dealDamage(2)" class="btn combat-btn-damage">-2</button>
+            <button @click="$store.game.dealDamage(1)" class="btn combat-btn-damage">-1</button>
+            <button @click="$store.game.fleeCombat()" class="btn btn-secondary combat-btn-flee">Flee</button>
+            <button @click="$store.game.playerDied()" class="btn btn-danger combat-btn-died">Player Died</button>
+          </div>
+        </div>
+      </template>
+
+      <!-- Victory screen -->
+      <template x-if="$store.game.combatState.status === 'victory'">
+        <div class="combat-card combat-end-screen">
+          <template x-if="$store.game.config?.combat?.victory_image">
+            <img class="combat-end-image" :src="$store.game.config.combat.victory_image" alt="Victory">
+          </template>
+          <template x-if="!$store.game.config?.combat?.victory_image">
+            <div class="combat-end-icon">🏆</div>
+          </template>
+          <div class="combat-end-title">Victory!</div>
+          <div class="combat-end-subtitle" x-text="$store.game.combatState.card + ' defeated.'"></div>
+          <button @click="$store.game.dismissCombat()" class="btn combat-btn-damage">Continue</button>
+        </div>
+      </template>
+
+      <!-- Fled screen -->
+      <template x-if="$store.game.combatState.status === 'fled'">
+        <div class="combat-card combat-end-screen">
+          <div class="combat-end-icon">🏃</div>
+          <div class="combat-end-title">Escaped!</div>
+          <div class="combat-end-penalty-label">Escape Penalty</div>
+          <div class="combat-end-penalty" x-text="$store.game.combatState.escape_penalty"></div>
+          <button @click="$store.game.dismissCombat()" class="btn btn-secondary">Dismiss</button>
+        </div>
+      </template>
+
+      <!-- Death screen -->
+      <template x-if="$store.game.combatState.status === 'died'">
+        <div class="combat-card combat-end-screen">
+          <template x-if="$store.game.config?.combat?.death_image">
+            <img class="combat-end-image" :src="$store.game.config.combat.death_image" alt="Defeated">
+          </template>
+          <template x-if="!$store.game.config?.combat?.death_image">
+            <div class="combat-end-icon">💀</div>
+          </template>
+          <div class="combat-end-title">Defeated</div>
+          <div class="combat-end-subtitle">Your quest ends here.</div>
+          <button @click="$store.game.dismissCombat()" class="btn btn-danger">End Game</button>
+        </div>
+      </template>
+
+    </div>
+  </template>
+
   <!-- Info panel (V31-V36) — rendered only when config.info exists -->
   <template x-if="$store.game.config?.info">
     <div>

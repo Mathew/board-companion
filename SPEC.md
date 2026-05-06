@@ -71,6 +71,16 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V36 | `infoOpen: boolean` in Alpine store; false on init; toggled by openInfo()/closeInfo(); does not affect deck/card/inventory state |
 | V37 | mobile info-panel CSS must set `max-width: 100%` (or `none`) to override desktop `max-width: 95vw`; panel must be exactly viewport-width with no left gap |
 | V38 | inventory has no max-size cap; `keep()` never rejects; guide text must not reference any item limit |
+| V39 | game JSON may have optional root-level `combat` obj: `{ victory_image?, death_image? }`; absent fields = styled text fallback screens, no error |
+| V40 | card `triggers` array optional (extends V13); each trigger: `{ type, ...params }`; unrecognised type = no-op |
+| V41 | combat trigger shape: `{ type:"combat", health: int, attribute_type: string, escape_penalty: string }` |
+| V42 | `draw()`: after setting activeCard, checks drawn card's `triggers`; first trigger with `type:"combat"` → sets `combatState`; activeCard still set (card remains drawn) |
+| V43 | `combatState`: `null \| { card, deckId, health, maxHealth, attribute_type, escape_penalty, status }` where status ∈ `active\|victory\|fled\|died`; persisted to localStorage |
+| V44 | combat overlay renders when `combatState !== null`; shows: monster name, health pips (current/max), attribute check label; round buttons: -2 / -1 / Flee / Player Died (no 0 button) |
+| V45 | health pips: filled circles = remaining health, empty circles = lost health; updates immediately on damage |
+| V46 | end-state rules: health ≤ 0 → status=`victory`; Flee → status=`fled`, show `escape_penalty` text; Player Died → status=`died`; each shows image (if `config.combat.*_image` present) or styled text fallback; dismiss btn clears `combatState` |
+| V47 | active combat screen must NOT display monster health pips or numeric health count — health tracked in `combatState` internally only, never visible to player |
+| V48 | active combat screen shows card image when `cardConfig(deckId, card).image` present; absent = show deck `backImage` as art placeholder (same opacity/style as card-frame-art-placeholder per V25) |
 
 ## §T — Tasks
 
@@ -118,6 +128,12 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T40 | x | mobile CSS (<800px): `.info-panel` fixed bottom sheet (height ~70vh, full width); transform translateY(100%)→(0) on open; border-radius top corners; same transition | V33,V34,I.ui |
 | T41 | x | fix mobile info-panel: add `max-width: 100%` to mobile media query override — removes left gap caused by inherited desktop `max-width: 95vw` | V37,I.ui |
 | T42 | x | remove "eight cards max" from dungeonquest.json guide text; update to describe unlimited inventory; remove any other hardcoded limit references | V38,I.gamejson |
+| T43 | x | extend game JSON: add optional root-level `combat` obj; add optional `triggers` array to card schema; add Monster Deck to dungeonquest.json with placeholder monsters | V39,V40,V41,I.gamejson |
+| T44 | x | Alpine store: add `combatState: null`; add `dealDamage(n)`, `fleeCombat()`, `playerDied()`, `dismissCombat()`; modify `draw()` to detect combat trigger and set combatState; extend `persist()`/`restore()` to include combatState; `buildDecks()` clears combatState | V42,V43,I.browser |
+| T45 | x | combat overlay HTML: fixed full-screen overlay, parchment-styled; monster name (Cinzel), health pips row, attribute check label, -2/-1/Flee/Player Died btns; end-state screen with image or fallback text, dismiss btn | V44,V45,V46,I.ui |
+| T46 | x | combat CSS: z-index above info panel (60+); health pip row; parchment card styling; end-state screen with image or styled text fallback; btn variants for damage/-1/-2, Flee (secondary), Player Died (danger) | V44,V45,V46,I.ui |
+| T47 | x | remove health pips row from active combat HTML; remove `.combat-health-row`/`.combat-pips`/`.combat-pip`/`.combat-health-count` CSS | V47,I.ui |
+| T48 | x | add card image (or deck backImage placeholder) to active combat HTML using `cardConfig()`; styled same as card-frame-art-placeholder | V48,I.ui |
 
 ## §B — Bug log
 
@@ -128,3 +144,5 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | B3 | 2026-05-06 | reshuffleAll()/resetDeck() don't clear activeCard — drawn card returns to draw pile while still shown active | V30 |
 | B4 | 2026-05-06 | mobile `.info-panel` inherits desktop `max-width: 95vw`; mobile query sets `width: 100%` but not `max-width` → panel is 95vw wide with `right:0`, 5vw gap left | V37 |
 | B5 | 2026-05-06 | guide text "eight cards max" is inaccurate — no cap enforced in `keep()`; inventory should be unlimited per game design | V38 |
+| B6 | 2026-05-06 | V44/V45 specified health pips visible on combat screen — design intent wrong; health must be hidden from player (tracked internally only) | V47 |
+| B7 | 2026-05-06 | active combat screen has no card image — player can't visualise monster; card image or deck backImage placeholder must show | V48 |

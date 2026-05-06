@@ -1,8 +1,12 @@
 {
   "id": "dungeonquest",
-  "game": "DungeonQuest",
+  "game": "DungeonQuest - Revised Edition",
   "edition": "Fantasy Flight Games Revised Edition",
   "_note": "Verify card names and counts against your physical copy. Edit this file to match.",
+  "combat": {
+    "victory_image": "images/combat/victory.svg",
+    "death_image": "images/combat/death.svg"
+  },
   "info": {
     "title": "Adventurer's Guide",
     "subtitle": "How to use this companion app with DungeonQuest.",
@@ -12,7 +16,7 @@
         "items": [
           { "icon": "🃏", "text": "Tap any deck on the left to draw a card. The card appears in the Active Card area." },
           { "icon": "📖", "text": "Read the card and follow its instructions. Use the buttons below to Keep it, Discard it, or Draw Another." },
-          { "icon": "🎒", "text": "Cards you keep are added to your Inventory — items, allies, and boons you currently hold. Tap any inventory card to use it." },
+          { "icon": "🎒", "text": "Cards you keep are added to your Inventory — items, allies, and boons you currently hold. Tap any inventory card to use it.  Hand the physical card to the player who should hold it." },
           { "icon": "🔄", "text": "Discarded cards go to each deck's discard pile. When a deck is empty, tap ↺ to reshuffle the discard pile and continue." }
         ]
       },
@@ -20,8 +24,10 @@
         "heading": "Expected Use from the Box",
         "items": [
           { "icon": "📚", "text": "Adventure Book — Use for setting up the quest, reading story text, and resolving special instructions." },
-          { "icon": "🃏", "text": "Cards — Use this app to manage and draw from the Fortune Deck, Chamber Deck, City Event Deck, and Trap Deck." },
-          { "icon": "🎭", "text": "Miniatures & Tokens — Use your miniatures and tokens on the board as normal to represent heroes, monsters, and game state." },
+          { "icon": "🃏", "text": "Cards — Use this app to manage and draw from the various decks." },
+          { "icon": "🎭", "text": "Miniatures, Tiles & Tokens — Use your miniatures, tiles and tokens on the board as normal to represent heroes, monsters, and game state." },
+          { "icon": "❤️", "text": "Health — Track your physical health on your chosen player sheet as normal." },
+          { "icon": "⚔️", "text": "Use the combat cards, or even better, the solo combat rules with dice." },
           { "icon": "🎲", "text": "Dice — Use physical dice for skill checks, combat, and other rolls as described in the rules." }
         ]
       }
@@ -106,6 +112,24 @@
         { "name": "Armorer's Sale",      "count": 2, "type": "event", "description": "Weapons and armour at a discount. Draw one free equipment card." },
         { "name": "Rumours of Darkness", "count": 2, "type": "event", "description": "Whispers speak of the dragon's restlessness. Shuffle the Chamber Deck." },
         { "name": "Hero's Welcome",      "count": 3, "type": "event", "description": "The crowd cheers your return. Gain 1 Determination token." }
+      ]
+    },
+    {
+      "id": "monster",
+      "name": "Monster Deck",
+      "description": "Beasts and foes lurking in the dungeon depths.",
+      "backImage": "images/cards/monster-back.svg",
+      "cards": [
+        { "name": "Goblin Raider",    "count": 3, "type": "monster", "description": "A snarling goblin with a rusty blade.",
+          "triggers": [{ "type": "combat", "health": 2, "attribute_type": "Strength",  "escape_penalty": "Lose 1 wound and retreat to your last room." }] },
+        { "name": "Skeleton Warrior", "count": 2, "type": "monster", "description": "Bleached bones held together by dark magic.",
+          "triggers": [{ "type": "combat", "health": 3, "attribute_type": "Strength",  "escape_penalty": "Lose 1 wound." }] },
+        { "name": "Cave Troll",       "count": 2, "type": "monster", "description": "A hulking brute blocking the passage.",
+          "triggers": [{ "type": "combat", "health": 4, "attribute_type": "Strength",  "escape_penalty": "Lose 2 wounds and move back 2 rooms." }] },
+        { "name": "Shadow Wraith",    "count": 1, "type": "monster", "description": "A cold presence that drains the soul.",
+          "triggers": [{ "type": "combat", "health": 3, "attribute_type": "Willpower", "escape_penalty": "Lose 1 wound and 5 gold." }] },
+        { "name": "Dungeon Spider",   "count": 2, "type": "monster", "description": "Eight eyes gleam in the torchlight.",
+          "triggers": [{ "type": "combat", "health": 2, "attribute_type": "Agility",   "escape_penalty": "Lose 1 wound (poisoned)." }] }
       ]
     }
   ]
