@@ -1,0 +1,20 @@
+name,description,quantity
+Sorcerer's Bolt,"A sorcerer hurls a magic bolt in your direction! Test luck. If you succeed, end your turn. If you fail, suffer a number of wounds equal to the amount by which you failed.",1
+Gigantic Diamond,"Loot card showing a gigantic diamond worth 4,000 gold.",1
+Giant Naga,"The passage is blocked by a giant naga and you must turn around. Follow the procedure for exiting the catacombs. Then, place your adventurer in that space and rotate it 180 degrees. Discard this card and all of your catacomb cards.",1
+Treasure Chest,"When you cast Dragonfire Dungeon, roll 2 dice. The chest has a gold value equal to the result multiplied by 100.",2
+Demon Flame,"A demon bursts forth in a ball of flame! Test luck. You cannot discard determination tokens to pass this test. If you succeed, suffer 1 wound. If you fail, suffer 5 wounds.",1
+Troll Smash,"A troll swings his mighty club directly at you! Test luck. If you succeed, end your turn. If you fail, subtract your armor value from 10 and suffer that many wounds.",1
+Hole in the Roof,"Test agility. If you succeed, you may exit the catacomb. If you fail, end your turn on your next turn; you may test agility again instead of drawing a catacomb card.",2
+Razorwing Attack,Roll 1 die and suffer a number of wounds equal to the result.,2
+Hidden Trap,Draw a trap card.,4
+Exit,You have found a way out! You may immediately exit the catacombs.,6
+Empty,The room is empty; nothing happens.,8
+Golem Grab,"A golem lunges at you out of the darkness, grabbing at your gear! Test luck. If you succeed, end your turn. If you fail, suffer 2 wounds and discard a loot card (if you have any).",1
+Shuffle,"Discard this card. Then, shuffle the catacomb deck and the catacomb discard pile together. Finally, draw a card from the catacomb deck and resolve it.",1
+Greedy Deep Elf,"A suspicious-looking deep elf beckons you near. You may discard 1 of your loot cards as a bribe. If you do, roll 1 die and multiply the result by 100. If this total is less than the gold value of the loot card you discarded, she shows you the way out and you may immediately exit the catacombs. If the total is higher, she betrays you! Suffer 4 wounds.",1
+Torch Goes Out,"While you are in the catacombs, test luck at the start of your status phase. If you succeed, you relight your torch; take your turn as normal. If you fail, end your turn.",2
+Skeleton Volley,"A group of skeletons launches a volley of arrows down the hall toward you! Test luck. If you succeed, end your turn. If you fail, draw 2 monster cards and suffer a number of wounds equal to the sum of the weapon penalties on both cards. Then, discard the cards.",1
+Spider's Venom,"You are bitten by a spider. While you are in the catacombs, roll 1 die at the start of your status phase: 1-2) Suffer 1 wound. 3-6) Nothing happens.",1
+Horde of Rats,"You are overwhelmed by a horde of verminous rats! Test armor. If you fail, suffer 4 wounds.",2
+Vampire Bite,"Test agility or armor (whichever is lower). If you fail, keep this card when you exit the catacombs. While you have this card, suffer 1 wound at the start of your status phase.",1

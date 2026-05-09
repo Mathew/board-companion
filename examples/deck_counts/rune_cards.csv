@@ -1,0 +1,13 @@
+name,description
+Rune of Death,Discard after you draw an 'Ambush' card. Discard the 'Ambush' card without resolving it.
+Rune of Insight,Discard at the end of your action phase to discard all search tokens in your space and all spaces adjacent to your space.
+Stasis Rune,Discard at the end of your status phase to take an additional turn at the end of this turn.
+Rune of Dragonfire,Discard when you are about to draw a dragon card. Return all of the dragon cards to the deck and shuffle it.
+Life Drain Rune,Discard after defeating a monster in combat. Heal all of your wounds.
+Rune of Transformation,Discard after you draw a dungeon chamber to draw a second dungeon chamber. Shuffle one chamber back into the stack and place the other on the board as normal.
+Rune of Luck,"Discard after you fail an attribute test. The test automatically succeeds instead. Then, discard all of your determination tokens."
+Teleportation Rune,"Discard at the end of your status phase to move to any adjacent space and resolve its effects. If you encounter a monster, you cannot escape."
+Rune of Blinding,"Discard after you draw a search, crypt, or corpse card. Suffer 1 wound and discard the card without resolving it."
+Rune of Opening,Discard at the end of your status phase to ignore all doors and portcullises during that turn.
+Rune of Healing,Discard at the end of your status phase to heal up to 6 wounds.
+Rune of Vision,"Discard at the end of your status phase to draw 4 search cards, arrange them in any order you like, and return them to the top of the search deck."

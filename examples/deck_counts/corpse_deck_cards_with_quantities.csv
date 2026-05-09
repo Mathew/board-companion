@@ -1,0 +1,12 @@
+name,description,quantity
+Unstable Potion,You may discard the potion at the start of your status phase and roll 2 dice: 2) You die. 3-5) Suffer 4 wounds. 6-7) Nothing happens. 8-10) Heal up to 3 wounds. 11-12) Heal all of your wounds.,1
+Shuffle,"Discard this card. Then, shuffle the corpse deck and the corpse discard pile together. Finally, draw a card from the corpse deck and resolve it.",1
+Gold Coins,200 gold coins.,1
+Gold Coins,100 gold coins.,1
+Old Bones,"Roll 1 die: 1-3) Nothing happens. 4-6) The bones spring to life and attack you. You encounter a monster. During this encounter, you cannot escape.",1
+Rope,"When you resolve a “Trapdoor” or “Hole in the Roof” card or a Bottomless Pit chamber, you may discard this card to automatically succeed in your attribute test.",3
+Empty,This corpse possesses nothing of value; nothing happens.,3
+Small Scorpion,"Roll 1 die, subtract 2 from the result, and suffer that many wounds.",1
+Gold Coins,50 gold coins.,1
+Deadly Scorpion,Roll 1 die and suffer a number of wounds equal to the result.,1
+Scorpion,"Roll 1 die, subtract 1 from the result, and suffer that many wounds.",1

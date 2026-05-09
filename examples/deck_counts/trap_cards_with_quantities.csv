@@ -1,0 +1,9 @@
+name,description,quantity
+Explosion,Suffer 4 wounds and lose your next turn.,2
+Swinging Blade,"Test armor. If you fail, you die!",2
+Ceiling Collapses,"The ceiling gives way! Some paths are blocked by debris, while other new paths are revealed. Rotate the chamber tile you are in 90 degrees clockwise.",2
+Poisonous Snakes,"Roll 1 die, suffer a number of wounds equal to the result, and lose that many turns.",2
+Crossfire Trap,"Arrows fire from the walls. Test armor. If you fail, suffer a number of wounds equal to the amount by which you failed.",2
+Trapdoor,"Test agility. If you fail, suffer 1 wound and enter the catacombs.",2
+Shuffle,"Discard this card. Then, shuffle the trap deck and the trap discard pile together. Finally, draw a card from the trap deck and resolve it.",1
+Poisonous Gas,"Roll 1 die, subtract 3 from the result, and suffer that many wounds. Then, roll 1 die, subtract 3 from the result, and lose that many turns.",2

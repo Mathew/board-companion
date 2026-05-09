@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 180">
+  <rect width="120" height="180" rx="8" fill="#1C150A"/>
+  <rect x="6" y="6" width="108" height="168" rx="6" fill="none" stroke="#A48B3A" stroke-width="2"/>
+  <rect x="12" y="12" width="96" height="156" rx="4" fill="none" stroke="#A48B3A" stroke-width="0.5" opacity="0.5"/>
+  <path d="M 36 132 L 36 78 Q 36 54 60 54 Q 84 54 84 78 L 84 132 Z" fill="none" stroke="#A48B3A" stroke-width="2"/>
+  <path d="M 48 132 L 48 86 Q 48 70 60 70 Q 72 70 72 86 L 72 132 Z" fill="#A48B3A" opacity="0.12"/>
+  <line x1="60" y1="48" x2="60" y2="38" stroke="#A48B3A" stroke-width="2"/>
+  <ellipse cx="60" cy="34" rx="4" ry="6" fill="#A48B3A" opacity="0.85"/>
+  <ellipse cx="60" cy="32" rx="2" ry="3" fill="#1C150A"/>
+  <line x1="36" y1="132" x2="84" y2="132" stroke="#A48B3A" stroke-width="2"/>
+  <line x1="22" y1="132" x2="36" y2="132" stroke="#A48B3A" stroke-width="1" opacity="0.4"/>
+  <line x1="84" y1="132" x2="98" y2="132" stroke="#A48B3A" stroke-width="1" opacity="0.4"/>
+  <rect x="50" y="120" width="20" height="12" fill="none" stroke="#A48B3A" stroke-width="1" opacity="0.6"/>
+</svg>

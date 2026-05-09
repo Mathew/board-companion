@@ -86,7 +86,7 @@ document.addEventListener('alpine:init', () => {
           health: combatTrigger.health,
           maxHealth: combatTrigger.health,
           attribute_type: combatTrigger.attribute_type,
-          escape_penalty: combatTrigger.escape_penalty,
+          escape_penalty: combatTrigger.escape_penalty ?? `Suffer ${combatTrigger.escape_wounds} wound${combatTrigger.escape_wounds === 1 ? '' : 's'}.`,
           status: 'active'
         };
       }

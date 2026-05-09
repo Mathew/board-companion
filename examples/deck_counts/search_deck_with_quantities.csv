@@ -1,0 +1,14 @@
+name,description,quantity
+Hidden Trap,Draw a trap card.,2
+Giant Centipede,"Roll 2 dice, add their results and suffer a number of wounds equal to this total.",1
+Spider's Venom,"You are bitten by a spider. While you are in the catacombs, roll 1 die at the start of your status phase: 1-2) Suffer 1 wound. 3-6) Nothing happens.",1
+Gold Coins,150,1
+Gold Coins,70,1
+Gold Coins,60,1
+Gold Coins,10,1
+Shuffle,"Discard this card. Then, shuffle the search deck and the search discard pile together. Finally draw a card from the search deck and resolve it.",1
+Ferrox,"Roll 1 die; the result is the ferrox's life value. Then, test strength. If you succeed, the ferrox loses 1 life. If you fail, suffer 1 wound. Continue testing strength until the ferrox's life value reaches 0 or until you die.",2
+Unstable Potion,You may discard the potion at the start of your status phase and roll 2 dice: 2) You die. 3-5) Suffer 4 wounds. 6-7) Nothing happens. 8-10) Heal up to 3 wounds. 11-12) Heal all of your wounds.,2
+Secret Door,"You may immediately move to any adjacent space. If the space is unexplored, place a chamber as normal. If you encounter a monster, you cannot escape.",8
+Passage Down,Place a catacomb entrance marker on this chamber.,4
+Empty,The room is empty; nothing happens.,6

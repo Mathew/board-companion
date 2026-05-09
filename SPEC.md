@@ -23,7 +23,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | id | surface | notes |
 |----|---------|-------|
 | I.browser | Browser localStorage | persist runtime deck state (draw order, discards, inventory) |
-| I.gamejson | `games/<name>.json` | deck defs: `backImage` per deck; cards with `name`, `count`, optional `type`/`description`/`image`; optional root-level `info` obj for guide panel |
+| I.gamejson | `games/<name>.json` | deck defs: `backImage` per deck, optional `image` (deck face art, null = fallback to `backImage`); cards with `name`, `count`, optional `type`/`description`/`image`/`triggers`; optional root-level `info` + `combat` objs |
 | I.pwa | Web App Manifest + Service Worker | installable, offline |
 | I.ghpages | GitHub Pages | static deploy, root or /docs |
 | I.ui | Touch-friendly UI | draw on tap, reset controls |
@@ -82,6 +82,9 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V47 | active combat screen must NOT display monster health pips or numeric health count — health tracked in `combatState` internally only, never visible to player |
 | V48 | active combat screen shows card image when `cardConfig(deckId, card).image` present; absent = show deck `backImage` as art placeholder (same opacity/style as card-frame-art-placeholder per V25) |
 | V49 | active combat screen shows static combat round instructions: (1) Roll 2d6 (2) result ≤ attribute → monster −1 wound (3) result > attribute → you −1 wound (4) doubles → 2 wounds instead; text is dim/secondary, always visible during active combat |
+| V50 | deck `image` field optional (null = absent); render fallback uses `deck.image ?? deck.backImage` — extends V13 fallback rule to deck level |
+| V51 | combat trigger schema: `escape_wounds: int` required, `escape_penalty: string` optional override; UI renders override if present else `"Suffer N wounds."` derived from int — supersedes V41 |
+| V52 | card `name` unique within a deck — `cardConfig()` lookup is name-keyed; CSV-derived duplicates disambiguated via name suffix (e.g. `"Gold Coins (200g)"`) |
 
 ## §T — Tasks
 
@@ -136,6 +139,9 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T47 | x | remove health pips row from active combat HTML; remove `.combat-health-row`/`.combat-pips`/`.combat-pip`/`.combat-health-count` CSS | V47,I.ui |
 | T48 | x | add card image (or deck backImage placeholder) to active combat HTML using `cardConfig()`; styled same as card-frame-art-placeholder | V48,I.ui |
 | T49 | x | add combat round instructions block to active combat HTML: 4-item list (Roll 2d6 / ≤ attr → monster wound / > attr → you wound / doubles → 2 wounds); dim secondary style | V49,I.ui |
+| T50 | x | replace `games/dungeonquest.json` decks with 11 CSV-derived decks (dungeon/door/search/crypt/corpse/catacomb/monster/trap/treasure/dragon/rune); drop fortune/chamber/city; add `image:null` per deck; disambiguate dup card names | V50,V51,V52,I.gamejson |
+| T51 | x | generate 11 deck back-image SVGs in `images/cards/` matching existing style (120×180, dark fill, themed stroke); add to sw.js ASSETS for offline cache | V6,V13,I.pwa |
+| T52 | x | engine: combat trigger reads `escape_wounds` int; `combatState.escape_penalty` derived as `trigger.escape_penalty ?? "Suffer N wounds."` in `app.js` `draw()` | V51,I.browser |
 
 ## §B — Bug log
 

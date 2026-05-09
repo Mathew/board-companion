@@ -1,0 +1,6 @@
+name, quantity, health, escape_penalty, attribute_type
+Troll, 4, 4, 3, Armour
+Demon, 4, 8, 6, Strength
+Sorceror, 4, 3, 3, Luck
+Golem, 4, 4, 3, Strength
+Skeleton, 4, 3, 1, Agility

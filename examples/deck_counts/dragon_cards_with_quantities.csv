@@ -1,0 +1,3 @@
+name, text, quantity
+Sleeping, "Draw 2 treasure cards.  On your next turn, you may either exit the treasure chamber or stay and draw another dragon card.", 7
+Dragon Rage, "Discard all of your treasure cards.  Then, roll 2 dice and suffer a number of wounds equal to the result.  Then, all other players in the treasure chamber suffer the effects described above.  Finally, shuffle all discarded dragon cards (including this one) back into the dragon deck.", 1

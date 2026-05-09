@@ -1,4 +1,4 @@
-const CACHE = 'dq-v3';
+const CACHE = 'dq-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -8,9 +8,17 @@ const ASSETS = [
   './icons/icon.svg',
   './games/dungeonquest.json',
   './themes/dungeonquest.css',
-  './images/cards/fortune-back.svg',
-  './images/cards/chamber-back.svg',
-  './images/cards/city-back.svg',
+  './images/cards/dungeon-back.svg',
+  './images/cards/door-back.svg',
+  './images/cards/search-back.svg',
+  './images/cards/crypt-back.svg',
+  './images/cards/corpse-back.svg',
+  './images/cards/catacomb-back.svg',
+  './images/cards/monster-back.svg',
+  './images/cards/trap-back.svg',
+  './images/cards/treasure-back.svg',
+  './images/cards/dragon-back.svg',
+  './images/cards/rune-back.svg',
   'https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js'
 ];
 

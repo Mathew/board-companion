@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 180">
+  <rect width="120" height="180" rx="8" fill="#1C150A"/>
+  <rect x="6" y="6" width="108" height="168" rx="6" fill="none" stroke="#A03020" stroke-width="2"/>
+  <rect x="12" y="12" width="96" height="156" rx="4" fill="none" stroke="#A03020" stroke-width="0.5" opacity="0.5"/>
+  <line x1="34" y1="58" x2="86" y2="120" stroke="#A03020" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="86" y1="58" x2="34" y2="120" stroke="#A03020" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="34,58 30,52 38,52" fill="#A03020"/>
+  <polygon points="86,58 82,52 90,52" fill="#A03020"/>
+  <polygon points="34,120 30,126 38,126" fill="#A03020"/>
+  <polygon points="86,120 82,126 90,126" fill="#A03020"/>
+  <line x1="40" y1="64" x2="44" y2="68" stroke="#A03020" stroke-width="1" opacity="0.6"/>
+  <line x1="80" y1="64" x2="76" y2="68" stroke="#A03020" stroke-width="1" opacity="0.6"/>
+  <circle cx="60" cy="89" r="3" fill="#A03020" opacity="0.7"/>
+  <line x1="22" y1="142" x2="98" y2="142" stroke="#A03020" stroke-width="1" opacity="0.5"/>
+  <path d="M 38 142 L 42 150 L 46 142 L 50 150 L 54 142 L 58 150 L 62 142 L 66 150 L 70 142 L 74 150 L 78 142 L 82 150" fill="none" stroke="#A03020" stroke-width="1" opacity="0.5"/>
+</svg>

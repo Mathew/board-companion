@@ -1,0 +1,5 @@
+name,description,quantity
+Door Jammed,The door does not open; remain in your current chamber.,2
+Spear Trap,Roll 1 die and suffer a number of wounds equal to the result; remain in your current chamber.,2
+Door Opens,The door opens; move into the adjacent chamber.,8
+Shuffle,"Discard this card. Then, shuffle the door deck and the door discard pile together. Finally, draw a card from the door deck and resolve it.",1

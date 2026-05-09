@@ -1,0 +1,18 @@
+name,description,quantity
+Razorwing Attack,Roll 1 die and suffer a number of wounds equal to the result.,1
+Passage Down,Place a catacomb entrance marker on this chamber.,2
+Hidden Trap,Draw a trap card.,3
+Torch Goes Out,"Keep this card. While you have this card, test luck at the start of your status phase. If you succeed, you relight your torch, discard this card and take your turn. If you fail, end your turn.",1
+Ceiling Collapses,"The ceiling gives way! Some paths are blocked by debris, while other new paths are revealed. Rotate the chamber tile you are in 90 degrees clockwise.",2
+Dead Adventurer,"You may loot the body for treasure. If you choose to do so, draw 1 corpse card.",8
+Ambush,Encounter a monster.,6
+Unstable Potion,You may discard the potion at the start of your status phase and roll 2 dice: 2) You die. 3-5) Suffer 4 wounds. 6-7) Nothing happens. 8-10) Heal up to 3 wounds. 11-12) Heal all of your wounds.,1
+Gold Coins,30 gold coins.,1
+Shuffle,"Discard this card. Then, shuffle the dungeon deck and the dungeon discard pile together. Finally, draw a card from the dungeon deck and resolve it.",1
+Crypt,"You may explore the crypt for treasure. If you choose to do so, draw 1 crypt card.",8
+Empty,The room is empty; nothing happens.,11
+Lingering Shade,"Keep this card. While you have this card, roll 2 dice at the start of your status phase. 2-3) You die. 4-12) Take your turn as normal. Discard this card if you enter the catacombs or cast Dragonfire Dungeon.",1
+Gold Coins,40 gold coins.,1
+Bottle Imp,"If you exit Dragonfire Dungeon, you may roll 1 die at the end of the game: 1-3) Discard one of your other loot cards at random. 4-6) Draw a treasure card.",1
+Secret Door,"You may immediately move to any adjacent space. If the space is unexplored, place a chamber as normal. If you encounter a monster, you cannot escape.",1
+Curse of the Wizard,Roll 1 die and rotate all corridor tiles in the following direction: 1-2) 90 degrees clockwise 3-4) 180 degrees 5-6) 90 degrees counterclockwise.,1
