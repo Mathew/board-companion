@@ -81,6 +81,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V46 | end-state rules: health ≤ 0 → status=`victory`; Flee → status=`fled`, show `escape_penalty` text; Player Died → status=`died`; each shows image (if `config.combat.*_image` present) or styled text fallback; dismiss btn clears `combatState` |
 | V47 | active combat screen must NOT display monster health pips or numeric health count — health tracked in `combatState` internally only, never visible to player |
 | V48 | active combat screen shows card image when `cardConfig(deckId, card).image` present; absent = show deck `backImage` as art placeholder (same opacity/style as card-frame-art-placeholder per V25) |
+| V49 | active combat screen shows static combat round instructions: (1) Roll 2d6 (2) result ≤ attribute → monster −1 wound (3) result > attribute → you −1 wound (4) doubles → 2 wounds instead; text is dim/secondary, always visible during active combat |
 
 ## §T — Tasks
 
@@ -134,6 +135,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T46 | x | combat CSS: z-index above info panel (60+); health pip row; parchment card styling; end-state screen with image or styled text fallback; btn variants for damage/-1/-2, Flee (secondary), Player Died (danger) | V44,V45,V46,I.ui |
 | T47 | x | remove health pips row from active combat HTML; remove `.combat-health-row`/`.combat-pips`/`.combat-pip`/`.combat-health-count` CSS | V47,I.ui |
 | T48 | x | add card image (or deck backImage placeholder) to active combat HTML using `cardConfig()`; styled same as card-frame-art-placeholder | V48,I.ui |
+| T49 | x | add combat round instructions block to active combat HTML: 4-item list (Roll 2d6 / ≤ attr → monster wound / > attr → you wound / doubles → 2 wounds); dim secondary style | V49,I.ui |
 
 ## §B — Bug log
 

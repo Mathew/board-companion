@@ -229,6 +229,12 @@
               ? `background-image:url('${$store.game.deckConfig($store.game.combatState.deckId).backImage}')`
               : ''"
           ></div>
+          <ol class="combat-rules">
+            <li>Roll 2d6</li>
+            <li>Result ≤ <strong x-text="$store.game.combatState.attribute_type"></strong> → monster takes 1 wound</li>
+            <li>Result &gt; <strong x-text="$store.game.combatState.attribute_type"></strong> → you take 1 wound</li>
+            <li>Doubles → 2 wounds instead</li>
+          </ol>
           <div class="combat-actions">
             <button @click="$store.game.dealDamage(2)" class="btn combat-btn-damage">-2</button>
             <button @click="$store.game.dealDamage(1)" class="btn combat-btn-damage">-1</button>
