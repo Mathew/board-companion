@@ -49,9 +49,9 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V14 | card flip animation duration set by CSS var `--draw-duration` (default `1s`); no JS timers control animation length |
 | V15 | inventory items display same card detail fields (type, description, image) as drawn-card area — same `cardConfig()` lookup |
 | V16 | `.current-card-area` has `min-height` large enough to hold full card detail (name + type badge + description) without layout shift on draw |
-| V17 | desktop layout (≥800px): 3 fixed columns — `decks-panel` (left, ~260px), `active-card-panel` (center, flex-grow), `inventory-panel` (right, ~260px); no wrapping |
+| V17 | desktop layout (≥800px): 3-column CSS grid — `decks-panel` (left, `minmax(420px, 2fr)`), `active-card-panel` (center, `minmax(280px, 1fr)`), `inventory-panel` (right, `minmax(260px, 1fr)`); no wrapping; panels overflow-y scroll independently |
 | V18 | active card is global (one per app); tracks `{card, deckId}` of last drawn across all decks; cleared on full reset; source deck name shown as badge above card |
-| V19 | deck panel entries = visual card block: large `backImage` stack left, deck name, optional deck `description`, remaining+discard count badges; clicking entire block = `draw(deckId)` + `setTab('card')`; active deck (matches `activeCard.deckId`) gets accent border; per-deck reshuffle ↺ btn present but compact |
+| V19 | deck panel entries = visual card block: `backImage` stack left, deck name, optional deck `description`, remaining+discard count badges, per-deck reshuffle ↺ btn (compact); clicking entire block = `draw(deckId)` + `setTab('card')`; active deck (matches `activeCard.deckId`) gets accent border. Decks rendered into `.decks-list` per V53 |
 | V20 | mobile layout (<800px): 3-tab view switcher (Decks \| Card \| Inventory); one panel visible at time; default tab = Decks |
 | V21 | "Reshuffle All Discards" btn at bottom of decks panel; reshuffles all decks with discards |
 | V22 | active card panel action btns: "Keep in Inventory" (→ keep()), "Discard" (clears active card display only), "Draw Another" (draw() from same deckId) |
@@ -85,6 +85,8 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V50 | deck `image` field optional (null = absent); render fallback uses `deck.image ?? deck.backImage` — extends V13 fallback rule to deck level |
 | V51 | combat trigger schema: `escape_wounds: int` required, `escape_penalty: string` optional override; UI renders override if present else `"Suffer N wounds."` derived from int — supersedes V41 |
 | V52 | card `name` unique within a deck — `cardConfig()` lookup is name-keyed; CSV-derived duplicates disambiguated via name suffix (e.g. `"Gold Coins (200g)"`) |
+| V53 | desktop `.decks-list` is CSS grid `repeat(auto-fill, minmax(190px, 1fr))` with `gap: 8px` — auto wraps to multi-column whenever decks panel is wide enough; mobile (<800px) stays single-column flex (one tile per row, full-width) |
+| V54 | `.card-frame` max-width capped (220px); center panel may be narrower than before — card frame stays centered within `.active-card-panel`, never overflows horizontally; `.active-card-actions` width capped to match |
 
 ## §T — Tasks
 
@@ -142,6 +144,9 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T50 | x | replace `games/dungeonquest.json` decks with 11 CSV-derived decks (dungeon/door/search/crypt/corpse/catacomb/monster/trap/treasure/dragon/rune); drop fortune/chamber/city; add `image:null` per deck; disambiguate dup card names | V50,V51,V52,I.gamejson |
 | T51 | x | generate 11 deck back-image SVGs in `images/cards/` matching existing style (120×180, dark fill, themed stroke); add to sw.js ASSETS for offline cache | V6,V13,I.pwa |
 | T52 | x | engine: combat trigger reads `escape_wounds` int; `combatState.escape_penalty` derived as `trigger.escape_penalty ?? "Suffer N wounds."` in `app.js` `draw()` | V51,I.browser |
+| T53 | x | amend `style.css` `.app-layout` desktop grid: `grid-template-columns: minmax(420px, 2fr) minmax(280px, 1fr) minmax(260px, 1fr)` | V17,I.ui |
+| T54 | x | refactor `.decks-list` desktop CSS to `display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px;`; mobile (<800px) keeps flex column; shrink `.deck-stack` to ~40×60px so tile reads cleanly at 190px width | V53,V19,I.ui |
+| T55 | . | verify `.card-frame` + `.active-card-actions` fit inside narrower center column (≥280px); confirm card image, name, description, FROM label, KEEP/DISCARD/DRAW ANOTHER all visible without horizontal scroll at viewport 1024px and 1440px | V54,I.ui |
 
 ## §B — Bug log
 
@@ -154,3 +159,4 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | B5 | 2026-05-06 | guide text "eight cards max" is inaccurate — no cap enforced in `keep()`; inventory should be unlimited per game design | V38 |
 | B6 | 2026-05-06 | V44/V45 specified health pips visible on combat screen — design intent wrong; health must be hidden from player (tracked internally only) | V47 |
 | B7 | 2026-05-06 | active combat screen has no card image — player can't visualise monster; card image or deck backImage placeholder must show | V48 |
+| B8 | 2026-05-09 | desktop layout `280px 1fr 260px` + single-column `.decks-list` wastes horizontal space when game ships many decks (DungeonQuest = 11) — left panel scrolls while center column oversized | V17 amended, V53 added |

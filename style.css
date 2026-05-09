@@ -96,7 +96,7 @@ header h1 {
 @media (min-width: 800px) {
   .app-layout {
     display: grid;
-    grid-template-columns: 280px 1fr 260px;
+    grid-template-columns: minmax(420px, 2fr) minmax(280px, 1fr) minmax(260px, 1fr);
     gap: var(--gap);
     padding: var(--gap);
     overflow: hidden;
@@ -159,11 +159,18 @@ header h1 {
   letter-spacing: 0;
 }
 
-/* ---------- Deck entries — visual card blocks (V19, V24) ---------- */
+/* ---------- Deck entries — visual card blocks (V19, V24, V53) ---------- */
 .decks-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+@media (min-width: 800px) {
+  .decks-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 8px;
+  }
 }
 
 .deck-entry {
@@ -244,6 +251,18 @@ header h1 {
 
 .deck-entry-reshuffle { flex-shrink: 0; align-self: flex-start; }
 .reshuffle-all-btn { flex-shrink: 0; }
+
+/* Compact deck-entry tiles for desktop grid (V53) */
+@media (min-width: 800px) {
+  .deck-entry { gap: 8px; padding: 8px 8px 8px 10px; }
+  .deck-stack { width: 40px; height: 60px; }
+  .deck-stack-layer { width: 34px; height: 54px; }
+  .deck-entry-name { font-size: 0.84rem; }
+  .deck-entry-desc { font-size: 0.68rem; -webkit-line-clamp: 2; }
+  .deck-count-remain { font-size: 0.7rem; }
+  .deck-count-discard { font-size: 0.68rem; }
+  .deck-entry-reshuffle { padding: 6px 10px; min-height: 32px; font-size: 0.78rem; }
+}
 
 /* ---------- Active card panel (V18, V23, V25) ---------- */
 .active-card-wrap {
