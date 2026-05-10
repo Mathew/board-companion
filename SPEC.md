@@ -22,7 +22,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 
 | id | surface | notes |
 |----|---------|-------|
-| I.browser | Browser localStorage | persist runtime deck state (draw order, discards, inventory) |
+| I.browser | Browser localStorage | persist runtime deck state (draw order, discards, per-player inventories, playerCount) |
 | I.gamejson | `games/<name>.json` | deck defs: `backImage` per deck, optional `image` (deck face art, null = fallback to `backImage`); cards with `name`, `count`, optional `type`/`description`/`image`/`triggers`; optional root-level `info` + `combat` objs |
 | I.pwa | Web App Manifest + Service Worker | installable, offline |
 | I.ghpages | GitHub Pages | static deploy, root or /docs |
@@ -91,6 +91,24 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V56 | precache ASSETS list contains only same-origin paths; remote/CDN URLs (e.g. cdn.jsdelivr.net) excluded — runtime cache-first branch in fetch handler caches them on first successful online fetch |
 | V57 | fetch handler navigation branch: `e.request.mode === 'navigate'` falls back to `caches.match('./index.html')` on network failure (not exact-URL match); guarantees app shell loads offline regardless of URL shape/query/path |
 | V58 | `navigator.serviceWorker.register()` chain has explicit `.catch` handler logging to console — silent registration failure forbidden |
+| V59 | `playerCount` ∈ [1,4] when set; `players.length === playerCount`; player IDs stable 1..playerCount; player names default `"Player 1".."Player 4"`; reshuffle does not touch players |
+| V60 | per deck: `draw.length + discard.length + sum(player.inventory where item.deckId === deckId).length === initial_total` — supersedes V11 |
+| V61 | `keep(deckId, playerId)` moves last `deck.discard` entry → `players[playerId-1].inventory` as `{card, deckId}`; `use(playerId, idx)` moves `players[playerId-1].inventory[idx]` → source deck `discard` — supersedes V12 |
+| V62 | `moveDiscardToPlayer(deckId, discardIdx, playerId)` removes `deck.discard[discardIdx]` and pushes `{card, deckId}` to `players[playerId-1].inventory`; remainder of discard preserves chronological order |
+| V63 | active-card panel KEEP control renders one button per active player (label `KEEP → P{n}`) — count == `playerCount`; no global single KEEP btn; no picker modal — supersedes the "Keep in Inventory" portion of V22/V25 |
+| V64 | player-count selector overlay shows when `playerCount` is null/unset; modal blocks all other interaction; choices 1/2/3/4 write to store + persist; cannot be dismissed without choosing |
+| V65 | mid-game player-count change: increasing keeps existing player inventories intact; decreasing requires confirmation when removed players hold non-empty inventories — removed-player items merged into player 1; trigger via Menu/Quick-Help settings entry |
+| V66 | deck tile shows neither `description` text nor truncated subtitle — only numeric index badge, backImage stack, deck name, count badges, reshuffle btn — supersedes content portion of V19 |
+| V67 | deck tile numeric index badge = 1-based position in `config.decks[]` array (display order); rendered top-left of tile |
+| V68 | right-rail panel (desktop ≥800px) is three stacked sub-panels: `Inventory (Players)` summary (rows of `name`, item-count, chevron → fullscreen player view), `Discard History` (intro text + btn → fullscreen discard view), `Quick Help` (intro text + btn → existing Adventurer's Guide info panel) |
+| V69 | mobile tab labels: `Decks \| Active Card \| Menu`; `Menu` tab renders the same three sub-panels listed in V68 — supersedes V20 label list and V28 |
+| V70 | fullscreen Player Inventory view: player name header, list of held cards with `Use` btn each (returns card to source deck discard per V61), close btn; opens via summary-row chevron or row tap; closes via close btn / backdrop / ESC |
+| V71 | fullscreen Discard History view: per-deck sections (only decks with non-empty discard rendered), cards listed in chronological discard order (oldest first), each row shows card name + source-deck badge + per-player `→ P{n}` btns calling `moveDiscardToPlayer` per V62; close via btn / backdrop / ESC |
+| V72 | active-card panel button row: with `playerCount === 4`, 4 KEEP btns + DISCARD + DRAW ANOTHER fit inside `minmax(280px, 1fr)` center column at viewport 1024px without horizontal scroll; KEEP btns may compress to icon+number when needed |
+| V73 | combat remains global (single `combatState`); damage/flee/died btns unchanged; combat does not interact with `players[]` |
+| V74 | localStorage migration: on `restore()`, if persisted state has top-level `inventory` array but no `players`, set `playerCount = 1`, `players = [{id:1, name:"Player 1", inventory: <legacy>}]`, drop `inventory`; one-shot, persists in new shape |
+| V75 | full reset (Reset All btn) clears `playerCount` to null and `players[]` to `[]` in addition to V4 deck-reset behaviour; immediately re-triggers V64 selector overlay before any deck/card state is consumed — supersedes part of V4 |
+| V76 | active-card panel renders no KEEP btns until `playerCount` is set; if user lands on active-card view with `playerCount === null` (impossible after V64/V75 but defensive), buttons row shows DISCARD + DRAW ANOTHER only |
 
 ## §T — Tasks
 
@@ -155,6 +173,18 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T57 | x | drop `https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js` from sw.js ASSETS — runtime cache-first handler already covers it | V56,I.pwa |
 | T58 | x | sw.js fetch handler: add `e.request.mode === 'navigate'` branch; on network fail fall back to `caches.match('./index.html')` | V57,I.pwa |
 | T59 | x | index.html SW register: chain `.catch(err => console.error('SW registration failed', err))` | V58,I.pwa |
+| T60 | x | extend Alpine store: add `players[]`, `playerCount: null`, `activeView: null`, `selectedPlayerId: null`; remove flat `inventory`; update `persist()`/`restore()` shape; implement V74 migration | V59,V74,I.browser |
+| T61 | x | refactor store actions: `keep(deckId, playerId)`, `use(playerId, idx)`, add `moveDiscardToPlayer(deckId, discardIdx, playerId)`, `setPlayerCount(n)`, `openPlayerInventory(playerId)`, `openDiscardHistory()`, `closeActiveView()`; update `keepActive(playerId)` to delegate | V61,V62,V65,I.browser |
+| T62 | x | player-count selector overlay: blocking modal when `playerCount === null`; 1/2/3/4 buttons; on click writes store + persists + closes; theme-styled; ESC does NOT dismiss | V64,I.ui |
+| T63 | x | reset flow: `resetAll()` sets `playerCount=null`, `players=[]`, then V4 deck-reset; selector overlay re-appears next tick; "Reset All" btn confirm prompt unchanged | V75,I.ui |
+| T64 | x | refactor deck tile in `index.html`: remove `.deck-entry-desc` element; add `.deck-entry-index` numeric badge (1-based) top-left; CSS in `style.css`; mobile + desktop both show index | V66,V67,I.ui |
+| T65 | x | refactor active-card panel buttons: replace single KEEP btn with N buttons (one per `players[]`) labelled `KEEP → P{n}`; each calls `keep(activeCard.deckId, n)` then clears active card; verify fit at viewport 1024px with playerCount=4 (compress to icon+number if overflow) | V63,V72,I.ui |
+| T66 | x | right-rail layout: split `.inventory-panel` HTML into 3 sub-panels — `Inventory (Players)` summary rows, `Discard History` intro + CTA btn, `Quick Help` intro + Adventurer's Guide btn (existing `openInfo`); CSS for sub-panel headers + row chevron | V68,I.ui |
+| T67 | x | fullscreen Player Inventory overlay: HTML + CSS; renders when `activeView === 'player-inventory'`; reads `selectedPlayerId`; lists `players[selectedPlayerId-1].inventory` with `Use` btns; close via btn / backdrop / ESC | V70,I.ui |
+| T68 | x | fullscreen Discard History overlay: HTML + CSS; renders when `activeView === 'discard-history'`; iterates `config.decks` filtering non-empty `deck.discard`; per-card rows with N `→ P{n}` btns calling `moveDiscardToPlayer`; close via btn / backdrop / ESC | V71,V62,I.ui |
+| T69 | x | mobile tab switcher: rename labels `Active`→`Active Card`, `Inventory`→`Menu`; `Menu` tab content renders the three V68 sub-panels; remove standalone inventory tab content | V69,I.ui |
+| T70 | x | settings entry to change player count mid-game: btn in Quick Help sub-panel; opens count selector with V65 confirmation flow when reducing count drops items | V65,I.ui |
+| T71 | x | sw.js: bump CACHE name (`dq-v5` → `dq-v6`) so legacy clients refresh app shell after migration ships | V55,I.pwa |
 
 ## §B — Bug log
 
@@ -169,3 +199,4 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | B7 | 2026-05-06 | active combat screen has no card image — player can't visualise monster; card image or deck backImage placeholder must show | V48 |
 | B8 | 2026-05-09 | desktop layout `280px 1fr 260px` + single-column `.decks-list` wastes horizontal space when game ships many decks (DungeonQuest = 11) — left panel scrolls while center column oversized | V17 amended, V53 added |
 | B9 | 2026-05-10 | sw.js install uses `cache.addAll` with remote CDN URL in ASSETS — any CDN hiccup rejects entire precache → SW never activates → offline reload shows browser native "no internet" page. Fetch handler also lacks navigation fallback (exact-URL match only) and register() call has no .catch (silent fail). | V55,V56,V57,V58 |
+| B10 | 2026-05-10 | global flat `inventory` cannot represent multi-player play; deck description in tile wastes vertical space at 11 decks; no UI to recover from accidental discards; "Reset All" did not reset player setup state | V59-V76, T60-T71: per-player `players[]` reshape + 1-4 selector at first run + on Reset All (V75); compact tiles (V66/V67); discard-history fullscreen with move-to-inventory (V62/V71) |

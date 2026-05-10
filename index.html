@@ -41,11 +41,11 @@
 
     <div class="app-layout">
 
-      <!-- Left: Visual deck list (V19, V21, V24) -->
+      <!-- Left: Visual deck list (V19, V53, V66, V67) -->
       <aside class="decks-panel" :class="{'panel-active': $store.game.activeTab === 'decks'}">
         <h2 class="panel-heading">Decks</h2>
         <div class="decks-list">
-          <template x-for="deck in $store.game.decks" :key="deck.id">
+          <template x-for="(deck, i) in $store.game.decks" :key="deck.id">
             <div
               class="deck-entry"
               :class="{
@@ -54,6 +54,7 @@
               }"
               @click="if (deck.draw.length > 0) { $store.game.draw(deck.id); $store.game.setTab('card') }"
             >
+              <span class="deck-entry-index" x-text="i + 1"></span>
               <template x-if="$store.game.deckConfig(deck.id)?.backImage">
                 <div class="deck-stack">
                   <div class="deck-stack-layer" :style="`background-image:url('${$store.game.deckConfig(deck.id).backImage}')`"></div>
@@ -63,9 +64,6 @@
               </template>
               <div class="deck-entry-info">
                 <div class="deck-entry-name" x-text="deck.name"></div>
-                <template x-if="$store.game.deckConfig(deck.id)?.description">
-                  <div class="deck-entry-desc" x-text="$store.game.deckConfig(deck.id).description"></div>
-                </template>
                 <div class="deck-entry-counts">
                   <span class="deck-count-remain" x-text="deck.draw.length + ' left'"></span>
                   <template x-if="deck.discard.length > 0">
@@ -89,7 +87,7 @@
         >↺ Reshuffle All Discards</button>
       </aside>
 
-      <!-- Center: Global active card (V18, V22, V25) -->
+      <!-- Center: Global active card (V18, V22, V25, V63) -->
       <section class="active-card-panel" :class="{'panel-active': $store.game.activeTab === 'card'}">
         <h2 class="panel-heading">Active Card</h2>
         <template x-if="$store.game.activeCard">
@@ -128,7 +126,18 @@
               From: <strong x-text="$store.game.deckName($store.game.activeCard.deckId)"></strong>
             </div>
             <div class="active-card-actions">
-              <button @click="$store.game.keepActive()" class="btn btn-action-keep">📦 Keep in Inventory</button>
+              <!-- V63: one KEEP btn per player; V76: only when playerCount set -->
+              <template x-if="$store.game.playerCount !== null">
+                <div class="active-card-keep-btns">
+                  <template x-for="p in $store.game.players" :key="p.id">
+                    <button
+                      @click="$store.game.keepActive(p.id)"
+                      class="btn btn-action-keep btn-keep-player"
+                      x-text="$store.game.playerCount > 2 ? '📦 P' + p.id : '📦 KEEP → P' + p.id"
+                    ></button>
+                  </template>
+                </div>
+              </template>
               <button @click="$store.game.clearActive()" class="btn btn-action-discard">🗑 Discard</button>
               <button
                 @click="$store.game.drawAnother()"
@@ -144,46 +153,50 @@
         </div>
       </section>
 
-      <!-- Right: Inventory panel (V12, V15, V26) -->
-      <aside class="inventory-panel" :class="{'panel-active': $store.game.activeTab === 'inventory'}">
-        <h2 class="panel-heading">
-          Inventory
-          <span
-            x-show="$store.game.inventory.length > 0"
-            class="panel-count"
-            x-text="$store.game.inventory.length"
-          ></span>
-        </h2>
-        <div x-show="$store.game.inventory.length === 0" class="inventory-empty-msg">No items held</div>
-        <div class="inventory-list">
-          <template x-for="(item, idx) in $store.game.inventory" :key="idx">
-            <div
-              class="inventory-row"
-              x-data="{ get cfg() { return $store.game.cardConfig(item.deckId, item.card) } }"
-            >
-              <div class="inv-thumb" :class="'inv-type-' + (cfg?.type ?? 'default')">
-                <span x-text="(cfg?.type ?? '?').charAt(0).toUpperCase()"></span>
+      <!-- Right: Three sub-panels — Inventory / Discard History / Quick Help (V68, V69) -->
+      <aside class="inventory-panel" :class="{'panel-active': $store.game.activeTab === 'menu'}">
+
+        <!-- Sub-panel 1: Inventory (Players) (V68, V70) -->
+        <div class="right-subpanel">
+          <h2 class="panel-heading">Inventory
+            <span class="panel-count" x-show="$store.game.players.reduce((s,p) => s + p.inventory.length, 0) > 0" x-text="$store.game.players.reduce((s,p) => s + p.inventory.length, 0)"></span>
+          </h2>
+          <div class="player-summary-list">
+            <template x-for="p in $store.game.players" :key="p.id">
+              <div class="player-summary-row" @click="$store.game.openPlayerInventory(p.id)">
+                <div class="player-summary-info">
+                  <span class="player-name" x-text="p.name"></span>
+                  <span class="player-item-count" x-text="p.inventory.length + ' item' + (p.inventory.length === 1 ? '' : 's')"></span>
+                </div>
+                <span class="player-row-chevron">›</span>
               </div>
-              <div class="inventory-row-body">
-                <span class="inventory-row-name" x-text="item.card"></span>
-                <span class="inventory-row-deck" x-text="$store.game.deckName(item.deckId)"></span>
-                <template x-if="cfg?.description">
-                  <span class="inventory-row-desc" x-text="cfg.description"></span>
-                </template>
-              </div>
-              <button @click="$store.game.use(idx)" class="btn btn-danger btn-sm">Use</button>
-            </div>
-          </template>
+            </template>
+            <div x-show="$store.game.players.length === 0" class="inventory-empty-msg">No players set up</div>
+          </div>
         </div>
-        <button
-          class="btn btn-secondary view-all-btn"
-          @click="$store.game.setTab('inventory')"
-        >View Full Inventory</button>
+
+        <!-- Sub-panel 2: Discard History (V68, V71) -->
+        <div class="right-subpanel">
+          <h2 class="panel-heading">Discard History</h2>
+          <p class="subpanel-intro">Review all discards and assign cards to players.</p>
+          <button @click="$store.game.openDiscardHistory()" class="btn btn-secondary">View Discards</button>
+        </div>
+
+        <!-- Sub-panel 3: Quick Help (V68, V70) -->
+        <div class="right-subpanel">
+          <h2 class="panel-heading">Quick Help</h2>
+          <p class="subpanel-intro">Game rules and app guide.</p>
+          <template x-if="$store.game.config?.info">
+            <button @click="$store.game.openInfo()" class="btn btn-secondary">📖 Adventurer's Guide</button>
+          </template>
+          <button @click="$store.game.activeView = 'player-count-change'" class="btn btn-secondary">⚙ Change Player Count</button>
+        </div>
+
       </aside>
 
     </div><!-- .app-layout -->
 
-    <!-- Mobile tab bar (V20, V28) -->
+    <!-- Mobile tab bar (V69) -->
     <nav class="tab-bar">
       <button
         @click="$store.game.setTab('decks')"
@@ -194,12 +207,12 @@
         @click="$store.game.setTab('card')"
         :class="{'tab-active': $store.game.activeTab === 'card'}"
         class="tab-btn"
-      >Active<span x-show="$store.game.activeCard" class="tab-indicator"></span></button>
+      >Active Card<span x-show="$store.game.activeCard" class="tab-indicator"></span></button>
       <button
-        @click="$store.game.setTab('inventory')"
-        :class="{'tab-active': $store.game.activeTab === 'inventory'}"
+        @click="$store.game.setTab('menu')"
+        :class="{'tab-active': $store.game.activeTab === 'menu'}"
         class="tab-btn"
-      >Inventory<span x-show="$store.game.inventory.length > 0" class="tab-badge" x-text="$store.game.inventory.length"></span></button>
+      >Menu</button>
     </nav>
 
   </div><!-- .app-container -->
@@ -208,7 +221,6 @@
   <template x-if="$store.game.combatState">
     <div class="combat-overlay">
 
-      <!-- Active combat screen -->
       <template x-if="$store.game.combatState.status === 'active'">
         <div
           class="combat-card"
@@ -244,7 +256,6 @@
         </div>
       </template>
 
-      <!-- Victory screen -->
       <template x-if="$store.game.combatState.status === 'victory'">
         <div class="combat-card combat-end-screen">
           <template x-if="$store.game.config?.combat?.victory_image">
@@ -259,7 +270,6 @@
         </div>
       </template>
 
-      <!-- Fled screen -->
       <template x-if="$store.game.combatState.status === 'fled'">
         <div class="combat-card combat-end-screen">
           <div class="combat-end-icon">🏃</div>
@@ -270,7 +280,6 @@
         </div>
       </template>
 
-      <!-- Death screen -->
       <template x-if="$store.game.combatState.status === 'died'">
         <div class="combat-card combat-end-screen">
           <template x-if="$store.game.config?.combat?.death_image">
@@ -288,7 +297,7 @@
     </div>
   </template>
 
-  <!-- Info panel (V31-V36) — rendered only when config.info exists -->
+  <!-- Info panel (V31-V37) -->
   <template x-if="$store.game.config?.info">
     <div>
       <div
@@ -326,6 +335,98 @@
           </template>
         </div>
       </aside>
+    </div>
+  </template>
+
+  <!-- Player Inventory fullscreen overlay (V70, T67) -->
+  <template x-if="$store.game.loaded && $store.game.activeView === 'player-inventory'">
+    <div>
+      <div class="fullscreen-overlay-backdrop" @click="$store.game.closeActiveView()"></div>
+      <div class="fullscreen-overlay" @keydown.escape.window="$store.game.closeActiveView()">
+        <div class="fullscreen-overlay-header">
+          <h2 x-text="($store.game.players.find(p => p.id === $store.game.selectedPlayerId)?.name ?? 'Player') + ' Inventory'"></h2>
+          <button @click="$store.game.closeActiveView()" class="info-close-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="fullscreen-overlay-body">
+          <template x-for="(item, idx) in ($store.game.players.find(p => p.id === $store.game.selectedPlayerId)?.inventory ?? [])" :key="idx">
+            <div
+              class="inventory-row"
+              x-data="{ get cfg() { return $store.game.cardConfig(item.deckId, item.card) } }"
+            >
+              <div class="inv-thumb" :class="'inv-type-' + (cfg?.type ?? 'default')">
+                <span x-text="(cfg?.type ?? '?').charAt(0).toUpperCase()"></span>
+              </div>
+              <div class="inventory-row-body">
+                <span class="inventory-row-name" x-text="item.card"></span>
+                <span class="inventory-row-deck" x-text="$store.game.deckName(item.deckId)"></span>
+                <template x-if="cfg?.description">
+                  <span class="inventory-row-desc" x-text="cfg.description"></span>
+                </template>
+              </div>
+              <button @click="$store.game.use($store.game.selectedPlayerId, idx)" class="btn btn-danger btn-sm">Use</button>
+            </div>
+          </template>
+          <div
+            x-show="($store.game.players.find(p => p.id === $store.game.selectedPlayerId)?.inventory ?? []).length === 0"
+            class="inventory-empty-msg"
+          >No items held</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Discard History fullscreen overlay (V71, T68) -->
+  <template x-if="$store.game.loaded && $store.game.activeView === 'discard-history'">
+    <div>
+      <div class="fullscreen-overlay-backdrop" @click="$store.game.closeActiveView()"></div>
+      <div class="fullscreen-overlay" @keydown.escape.window="$store.game.closeActiveView()">
+        <div class="fullscreen-overlay-header">
+          <h2>Discard History</h2>
+          <button @click="$store.game.closeActiveView()" class="info-close-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="fullscreen-overlay-body">
+          <template x-for="deck in $store.game.decks.filter(d => d.discard.length > 0)" :key="deck.id">
+            <div class="discard-section">
+              <h3 class="discard-section-heading" x-text="$store.game.deckName(deck.id)"></h3>
+              <template x-for="(card, dIdx) in deck.discard" :key="dIdx">
+                <div class="discard-row">
+                  <span class="discard-card-name" x-text="card"></span>
+                  <div class="discard-row-btns">
+                    <template x-for="p in $store.game.players" :key="p.id">
+                      <button
+                        @click="$store.game.moveDiscardToPlayer(deck.id, dIdx, p.id)"
+                        class="btn btn-sm btn-secondary"
+                        x-text="'→ P' + p.id"
+                      ></button>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+          <div
+            x-show="$store.game.decks.every(d => d.discard.length === 0)"
+            class="inventory-empty-msg"
+          >No discards yet</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Player-count selector — blocking when null (V64) or mid-game change (V65, T70) -->
+  <template x-if="$store.game.loaded && ($store.game.playerCount === null || $store.game.activeView === 'player-count-change')">
+    <div class="player-count-overlay">
+      <div class="player-count-card">
+        <h2 class="player-count-title">How Many Adventurers?</h2>
+        <p class="player-count-subtitle" x-show="$store.game.playerCount !== null">Select a new player count</p>
+        <div class="player-count-btns">
+          <button @click="$store.game.setPlayerCount(1)" class="btn player-count-btn" :class="{'player-count-btn-current': $store.game.playerCount === 1}">1</button>
+          <button @click="$store.game.setPlayerCount(2)" class="btn player-count-btn" :class="{'player-count-btn-current': $store.game.playerCount === 2}">2</button>
+          <button @click="$store.game.setPlayerCount(3)" class="btn player-count-btn" :class="{'player-count-btn-current': $store.game.playerCount === 3}">3</button>
+          <button @click="$store.game.setPlayerCount(4)" class="btn player-count-btn" :class="{'player-count-btn-current': $store.game.playerCount === 4}">4</button>
+        </div>
+        <button x-show="$store.game.playerCount !== null" @click="$store.game.closeActiveView()" class="btn btn-secondary">Cancel</button>
+      </div>
     </div>
   </template>
 

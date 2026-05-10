@@ -174,6 +174,7 @@ header h1 {
 }
 
 .deck-entry {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -918,4 +919,255 @@ header h1 {
 }
 .active-card-wrap.is-drawing {
   animation: card-reveal var(--draw-duration) ease-out;
+}
+
+/* ---------- Deck tile index badge (V66, V67, T64) ---------- */
+.deck-entry-index {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 4px;
+  line-height: 1.4;
+  z-index: 2;
+  letter-spacing: 0;
+  pointer-events: none;
+}
+
+/* ---------- Per-player KEEP buttons (V63, V72, T65) ---------- */
+.active-card-keep-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+}
+.btn-keep-player {
+  font-size: 0.8rem;
+  padding: 10px 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 40px;
+}
+
+/* ---------- Right-rail sub-panels (V68, T66) ---------- */
+.right-subpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.right-subpanel:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.subpanel-intro {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+.player-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.player-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.player-summary-row:hover { border-color: var(--accent); }
+.player-summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.player-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.player-item-count {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+.player-row-chevron {
+  font-size: 1.3rem;
+  color: var(--text-dim);
+  line-height: 1;
+}
+
+/* ---------- Fullscreen overlays — Player Inventory + Discard History (V70, V71, T67, T68) ---------- */
+.fullscreen-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 54;
+}
+.fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  overflow: hidden;
+}
+@media (min-width: 800px) {
+  .fullscreen-overlay {
+    inset: 40px;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+.fullscreen-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface2);
+}
+.fullscreen-overlay-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+.fullscreen-overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Discard history sections (V71, T68) */
+.discard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.discard-section:last-child { margin-bottom: 0; }
+.discard-section-heading {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.discard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+.discard-card-name {
+  font-size: 0.85rem;
+  color: var(--text);
+  flex: 1;
+  min-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.discard-row-btns {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* ---------- Player-count selector overlay (V64, T62) ---------- */
+.player-count-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap);
+}
+.player-count-card {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+.player-count-title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+.player-count-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: -12px;
+}
+.player-count-btns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+.player-count-btn {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 16px;
+  min-height: 60px;
+  font-family: var(--font-heading);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.player-count-btn:hover { border-color: var(--accent); }
+.player-count-btn-current {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-invert);
 }
