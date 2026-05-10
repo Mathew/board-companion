@@ -137,9 +137,9 @@ header h1 {
 /* ---------- Panel heading ---------- */
 .panel-heading {
   font-family: var(--font-heading);
-  font-size: 0.75rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
   display: flex;
@@ -227,7 +227,7 @@ header h1 {
 }
 .deck-entry-name {
   font-family: var(--font-heading);
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
 }
@@ -247,8 +247,8 @@ header h1 {
   flex-wrap: wrap;
   margin-top: 2px;
 }
-.deck-count-remain { font-size: 0.74rem; font-weight: 700; color: var(--text); }
-.deck-count-discard { font-size: 0.72rem; color: var(--text-dim); }
+.deck-count-remain { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.deck-count-discard { font-size: 0.95rem; color: var(--text-dim); }
 
 .deck-entry-reshuffle { flex-shrink: 0; align-self: flex-start; }
 .reshuffle-all-btn { flex-shrink: 0; }
@@ -294,7 +294,7 @@ header h1 {
 }
 .card-frame-name {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text);
   padding: 9px 12px 7px;
@@ -323,7 +323,7 @@ header h1 {
   opacity: 0.5;
 }
 .card-frame-description {
-  font-size: 0.84rem;
+  font-size: 1rem;
   color: var(--text);
   font-style: italic;
   line-height: 1.5;
@@ -730,7 +730,7 @@ header h1 {
   font-family: var(--font-heading);
   font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
@@ -1078,7 +1078,7 @@ header h1 {
   font-family: var(--font-heading);
   font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
   padding-bottom: 4px;
