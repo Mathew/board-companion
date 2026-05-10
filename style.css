@@ -966,7 +966,7 @@ header h1 {
   min-height: 40px;
 }
 
-/* ---------- Right-rail sub-panels (V68, T66) ---------- */
+/* ---------- Right-rail sub-panels (V68, T66, V82) ---------- */
 .right-subpanel {
   display: flex;
   flex-direction: column;
@@ -978,6 +978,19 @@ header h1 {
   border-bottom: none;
   padding-bottom: 0;
 }
+
+/* Desktop: equal vertical distribution, independent scroll, no separators (V82) */
+@media (min-width: 800px) {
+  .inventory-panel { gap: var(--gap); }
+  .right-subpanel {
+    flex: 1 1 0;
+    min-height: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    overflow-y: auto;
+  }
+}
+
 .subpanel-intro {
   font-size: 0.82rem;
   color: var(--text-dim);
