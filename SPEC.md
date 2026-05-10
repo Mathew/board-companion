@@ -192,7 +192,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T72 | x | bump `style.css` root: `html { font-size: 24px }`; `--gap: 24px`; verify no fixed-px overrides break layout | V77,I.ui |
 | T73 | x | rewrite `.app-layout` desktop grid → `grid-template-columns: 1fr 1fr 1fr`; remove `minmax(...)` constraints | V17,I.ui |
 | T74 | x | bump `.decks-list` desktop grid → `repeat(auto-fill, minmax(280px, 1fr))`; verify wrap at 1024 / 1440 / 1920 | V53,I.ui |
-| T75 | . | bump `.deck-stack` 52→78, `.deck-stack-layer` 44→66 desktop; mobile mini-stack 40→60; scale offset transforms; verify no clipping inside tile padding | V78,I.ui |
+| T75 | x | bump `.deck-stack` 52→78, `.deck-stack-layer` 44→66 desktop; mobile mini-stack 40→60; scale offset transforms; verify no clipping inside tile padding | V78,I.ui |
 | T76 | . | bump `.card-frame max-width: 340px`; `.active-card-actions max-width: 380px`; verify center panel content fits at 1fr/1024 viewport | V54,I.ui |
 | T77 | . | audit + bump small-text `rem` values per V79 (panel-heading, deck-entry-name, card-frame-name/description, deck-count-* badges); reduce uppercase letter-spacing 0.12em → 0.08em | V79,I.ui |
 | T78 | . | re-verify T65 / V72 KEEP-btn row at new scale with `playerCount=4`; tighten icon+number compaction threshold | V80,I.ui |

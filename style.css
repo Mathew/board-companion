@@ -197,24 +197,24 @@ header h1 {
 /* Card stack visual (T30) */
 .deck-stack {
   position: relative;
-  width: 52px;
-  height: 76px;
+  width: 60px;
+  height: 90px;
   flex-shrink: 0;
 }
 .deck-stack-layer {
   position: absolute;
   top: 0;
   left: 0;
-  width: 44px;
-  height: 68px;
+  width: 50px;
+  height: 78px;
   border-radius: 5px;
   background-size: cover;
   background-position: center;
   background-color: var(--surface);
   border: 1px solid var(--border);
 }
-.deck-stack-layer:nth-child(1) { transform: rotate(-5deg) translate(-2px, 7px); opacity: 0.45; }
-.deck-stack-layer:nth-child(2) { transform: rotate(3deg) translate(2px, 4px); opacity: 0.7; }
+.deck-stack-layer:nth-child(1) { transform: rotate(-5deg) translate(-2px, 8px); opacity: 0.45; }
+.deck-stack-layer:nth-child(2) { transform: rotate(3deg) translate(2px, 5px); opacity: 0.7; }
 .deck-stack-layer:nth-child(3) { z-index: 1; }
 .deck-entry-empty .deck-stack { opacity: 0.35; }
 
@@ -253,15 +253,17 @@ header h1 {
 .deck-entry-reshuffle { flex-shrink: 0; align-self: flex-start; }
 .reshuffle-all-btn { flex-shrink: 0; }
 
-/* Compact deck-entry tiles for desktop grid (V53) */
+/* Desktop deck-entry tiles (V53, V78) */
 @media (min-width: 800px) {
   .deck-entry { gap: 8px; padding: 8px 8px 8px 10px; }
-  .deck-stack { width: 40px; height: 60px; }
-  .deck-stack-layer { width: 34px; height: 54px; }
-  .deck-entry-name { font-size: 0.84rem; }
+  .deck-stack { width: 78px; height: 114px; }
+  .deck-stack-layer { width: 66px; height: 102px; }
+  .deck-stack-layer:nth-child(1) { transform: rotate(-5deg) translate(-3px, 11px); }
+  .deck-stack-layer:nth-child(2) { transform: rotate(3deg) translate(3px, 6px); }
+  .deck-entry-name { font-size: 1.05rem; }
   .deck-entry-desc { font-size: 0.68rem; -webkit-line-clamp: 2; }
-  .deck-count-remain { font-size: 0.7rem; }
-  .deck-count-discard { font-size: 0.68rem; }
+  .deck-count-remain { font-size: 0.95rem; }
+  .deck-count-discard { font-size: 0.95rem; }
   .deck-entry-reshuffle { padding: 6px 10px; min-height: 32px; font-size: 0.78rem; }
 }
 
