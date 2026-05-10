@@ -87,6 +87,10 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V52 | card `name` unique within a deck — `cardConfig()` lookup is name-keyed; CSV-derived duplicates disambiguated via name suffix (e.g. `"Gold Coins (200g)"`) |
 | V53 | desktop `.decks-list` is CSS grid `repeat(auto-fill, minmax(190px, 1fr))` with `gap: 8px` — auto wraps to multi-column whenever decks panel is wide enough; mobile (<800px) stays single-column flex (one tile per row, full-width) |
 | V54 | `.card-frame` max-width capped (220px); center panel may be narrower than before — card frame stays centered within `.active-card-panel`, never overflows horizontally; `.active-card-actions` width capped to match |
+| V55 | sw.js install must NOT use `cache.addAll` (rejects whole precache on first failure); loop ASSETS with per-asset `cache.put(req, await fetch(req))` wrapped in try/catch — partial cache > no cache; supersedes V6 install semantics |
+| V56 | precache ASSETS list contains only same-origin paths; remote/CDN URLs (e.g. cdn.jsdelivr.net) excluded — runtime cache-first branch in fetch handler caches them on first successful online fetch |
+| V57 | fetch handler navigation branch: `e.request.mode === 'navigate'` falls back to `caches.match('./index.html')` on network failure (not exact-URL match); guarantees app shell loads offline regardless of URL shape/query/path |
+| V58 | `navigator.serviceWorker.register()` chain has explicit `.catch` handler logging to console — silent registration failure forbidden |
 
 ## §T — Tasks
 
@@ -146,7 +150,11 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T52 | x | engine: combat trigger reads `escape_wounds` int; `combatState.escape_penalty` derived as `trigger.escape_penalty ?? "Suffer N wounds."` in `app.js` `draw()` | V51,I.browser |
 | T53 | x | amend `style.css` `.app-layout` desktop grid: `grid-template-columns: minmax(420px, 2fr) minmax(280px, 1fr) minmax(260px, 1fr)` | V17,I.ui |
 | T54 | x | refactor `.decks-list` desktop CSS to `display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px;`; mobile (<800px) keeps flex column; shrink `.deck-stack` to ~40×60px so tile reads cleanly at 190px width | V53,V19,I.ui |
-| T55 | . | verify `.card-frame` + `.active-card-actions` fit inside narrower center column (≥280px); confirm card image, name, description, FROM label, KEEP/DISCARD/DRAW ANOTHER all visible without horizontal scroll at viewport 1024px and 1440px | V54,I.ui |
+| T55 | x | verify `.card-frame` + `.active-card-actions` fit inside narrower center column (≥280px); confirm card image, name, description, FROM label, KEEP/DISCARD/DRAW ANOTHER all visible without horizontal scroll at viewport 1024px and 1440px | V54,I.ui |
+| T56 | x | rewrite sw.js install: loop ASSETS with per-asset `cache.put` in try/catch; bump CACHE name (`dq-v4` → `dq-v5`) to evict poisoned partial caches | V55,I.pwa |
+| T57 | x | drop `https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js` from sw.js ASSETS — runtime cache-first handler already covers it | V56,I.pwa |
+| T58 | x | sw.js fetch handler: add `e.request.mode === 'navigate'` branch; on network fail fall back to `caches.match('./index.html')` | V57,I.pwa |
+| T59 | x | index.html SW register: chain `.catch(err => console.error('SW registration failed', err))` | V58,I.pwa |
 
 ## §B — Bug log
 
@@ -160,3 +168,4 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | B6 | 2026-05-06 | V44/V45 specified health pips visible on combat screen — design intent wrong; health must be hidden from player (tracked internally only) | V47 |
 | B7 | 2026-05-06 | active combat screen has no card image — player can't visualise monster; card image or deck backImage placeholder must show | V48 |
 | B8 | 2026-05-09 | desktop layout `280px 1fr 260px` + single-column `.decks-list` wastes horizontal space when game ships many decks (DungeonQuest = 11) — left panel scrolls while center column oversized | V17 amended, V53 added |
+| B9 | 2026-05-10 | sw.js install uses `cache.addAll` with remote CDN URL in ASSETS — any CDN hiccup rejects entire precache → SW never activates → offline reload shows browser native "no internet" page. Fetch handler also lacks navigation fallback (exact-URL match only) and register() call has no .catch (silent fail). | V55,V56,V57,V58 |

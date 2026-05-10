@@ -1,4 +1,4 @@
-const CACHE = 'dq-v4';
+const CACHE = 'dq-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -18,12 +18,22 @@ const ASSETS = [
   './images/cards/trap-back.svg',
   './images/cards/treasure-back.svg',
   './images/cards/dragon-back.svg',
-  './images/cards/rune-back.svg',
-  'https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js'
+  './images/cards/rune-back.svg'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE).then(cache =>
+      Promise.all(
+        ASSETS.map(url => {
+          const req = new Request(url);
+          return fetch(req)
+            .then(res => cache.put(req, res))
+            .catch(err => console.warn('SW: failed to cache', url, err));
+        })
+      )
+    )
+  );
   self.skipWaiting();
 });
 
@@ -37,9 +47,24 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
   const url = new URL(e.request.url);
   if (url.hostname === 'cdn.jsdelivr.net') {
-    e.respondWith(caches.match(e.request).then(c => c || fetch(e.request)));
+    e.respondWith(
+      caches.match(e.request).then(cached => {
+        if (cached) return cached;
+        return fetch(e.request).then(res => {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+          return res;
+        });
+      })
+    );
     return;
   }
   e.respondWith(
