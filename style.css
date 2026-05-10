@@ -282,7 +282,7 @@ header h1 {
 /* Game card frame (V25) */
 .card-frame {
   width: 100%;
-  max-width: 220px;
+  max-width: 340px;
   background: var(--surface2);
   border: 2px solid var(--border);
   border-radius: 10px;
@@ -350,7 +350,7 @@ header h1 {
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 280px;
+  max-width: 380px;
   flex-shrink: 0;
 }
 
