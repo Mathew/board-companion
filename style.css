@@ -159,17 +159,29 @@ header h1 {
   letter-spacing: 0;
 }
 
-/* ---------- Deck entries — visual card blocks (V19, V24, V53) ---------- */
+/* ---------- Deck entries — visual card blocks (V19, V24, V53, V81) ---------- */
 .decks-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  container-type: inline-size;
+  container-name: decks-list;
 }
 @media (min-width: 800px) {
   .decks-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 8px;
+  }
+}
+
+/* Container query: scale deck-stack when tile width ≥ 360px (V81); desktop only so mobile 60×90 baseline holds */
+@media (min-width: 800px) {
+  @container decks-list (min-width: 360px) {
+    .deck-stack { width: 78px; height: 114px; }
+    .deck-stack-layer { width: 66px; height: 102px; }
+    .deck-stack-layer:nth-child(1) { transform: rotate(-5deg) translate(-3px, 11px); opacity: 0.45; }
+    .deck-stack-layer:nth-child(2) { transform: rotate(3deg) translate(3px, 6px); opacity: 0.7; }
   }
 }
 
@@ -256,10 +268,6 @@ header h1 {
 /* Desktop deck-entry tiles (V53, V78) */
 @media (min-width: 800px) {
   .deck-entry { gap: 8px; padding: 8px 8px 8px 10px; }
-  .deck-stack { width: 78px; height: 114px; }
-  .deck-stack-layer { width: 66px; height: 102px; }
-  .deck-stack-layer:nth-child(1) { transform: rotate(-5deg) translate(-3px, 11px); }
-  .deck-stack-layer:nth-child(2) { transform: rotate(3deg) translate(3px, 6px); }
   .deck-entry-name { font-size: 1.05rem; }
   .deck-entry-desc { font-size: 0.68rem; -webkit-line-clamp: 2; }
   .deck-count-remain { font-size: 0.95rem; }
