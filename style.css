@@ -96,7 +96,7 @@ header h1 {
 @media (min-width: 800px) {
   .app-layout {
     display: grid;
-    grid-template-columns: minmax(420px, 2fr) minmax(280px, 1fr) minmax(260px, 1fr);
+    grid-template-columns: 1fr 1fr 1fr;
     gap: var(--gap);
     padding: var(--gap);
     overflow: hidden;
