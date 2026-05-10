@@ -49,7 +49,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V14 | card flip animation duration set by CSS var `--draw-duration` (default `1s`); no JS timers control animation length |
 | V15 | inventory items display same card detail fields (type, description, image) as drawn-card area — same `cardConfig()` lookup |
 | V16 | `.current-card-area` has `min-height` large enough to hold full card detail (name + type badge + description) without layout shift on draw |
-| V17 | desktop layout (≥800px): 3-column CSS grid — `decks-panel` (left, `minmax(420px, 2fr)`), `active-card-panel` (center, `minmax(280px, 1fr)`), `inventory-panel` (right, `minmax(260px, 1fr)`); no wrapping; panels overflow-y scroll independently |
+| V17 | desktop layout (≥800px): 3-column CSS grid — equal thirds `1fr 1fr 1fr` (decks-panel left, active-card-panel center, inventory-panel right); no wrapping; panels overflow-y scroll independently — supersedes prior `minmax(420px,2fr) minmax(280px,1fr) minmax(260px,1fr)` sizing |
 | V18 | active card is global (one per app); tracks `{card, deckId}` of last drawn across all decks; cleared on full reset; source deck name shown as badge above card |
 | V19 | deck panel entries = visual card block: `backImage` stack left, deck name, optional deck `description`, remaining+discard count badges, per-deck reshuffle ↺ btn (compact); clicking entire block = `draw(deckId)` + `setTab('card')`; active deck (matches `activeCard.deckId`) gets accent border. Decks rendered into `.decks-list` per V53 |
 | V20 | mobile layout (<800px): 3-tab view switcher (Decks \| Card \| Inventory); one panel visible at time; default tab = Decks |
@@ -85,8 +85,8 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V50 | deck `image` field optional (null = absent); render fallback uses `deck.image ?? deck.backImage` — extends V13 fallback rule to deck level |
 | V51 | combat trigger schema: `escape_wounds: int` required, `escape_penalty: string` optional override; UI renders override if present else `"Suffer N wounds."` derived from int — supersedes V41 |
 | V52 | card `name` unique within a deck — `cardConfig()` lookup is name-keyed; CSV-derived duplicates disambiguated via name suffix (e.g. `"Gold Coins (200g)"`) |
-| V53 | desktop `.decks-list` is CSS grid `repeat(auto-fill, minmax(190px, 1fr))` with `gap: 8px` — auto wraps to multi-column whenever decks panel is wide enough; mobile (<800px) stays single-column flex (one tile per row, full-width) |
-| V54 | `.card-frame` max-width capped (220px); center panel may be narrower than before — card frame stays centered within `.active-card-panel`, never overflows horizontally; `.active-card-actions` width capped to match |
+| V53 | desktop `.decks-list` is CSS grid `repeat(auto-fill, minmax(280px, 1fr))` with `gap: 8px` — auto wraps to multi-column whenever decks panel is wide enough; mobile (<800px) stays single-column flex (one tile per row, full-width) — supersedes prior 190px minmax |
+| V54 | `.card-frame` max-width capped (340px); card frame stays centered within `.active-card-panel`, never overflows horizontally; `.active-card-actions` max-width capped to 380px — supersedes prior 220/280 caps |
 | V55 | sw.js install must NOT use `cache.addAll` (rejects whole precache on first failure); loop ASSETS with per-asset `cache.put(req, await fetch(req))` wrapped in try/catch — partial cache > no cache; supersedes V6 install semantics |
 | V56 | precache ASSETS list contains only same-origin paths; remote/CDN URLs (e.g. cdn.jsdelivr.net) excluded — runtime cache-first branch in fetch handler caches them on first successful online fetch |
 | V57 | fetch handler navigation branch: `e.request.mode === 'navigate'` falls back to `caches.match('./index.html')` on network failure (not exact-URL match); guarantees app shell loads offline regardless of URL shape/query/path |
@@ -109,6 +109,10 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | V74 | localStorage migration: on `restore()`, if persisted state has top-level `inventory` array but no `players`, set `playerCount = 1`, `players = [{id:1, name:"Player 1", inventory: <legacy>}]`, drop `inventory`; one-shot, persists in new shape |
 | V75 | full reset (Reset All btn) clears `playerCount` to null and `players[]` to `[]` in addition to V4 deck-reset behaviour; immediately re-triggers V64 selector overlay before any deck/card state is consumed — supersedes part of V4 |
 | V76 | active-card panel renders no KEEP btns until `playerCount` is set; if user lands on active-card view with `playerCount === null` (impossible after V64/V75 but defensive), buttons row shows DISCARD + DRAW ANOTHER only |
+| V77 | UI base scale +50% over prior baseline: `html { font-size: 24px }` (was 16px); `--gap: 24px` (was 16px). All `rem`-based sizing inherits scale; no per-element font overrides beyond `style.css` defaults |
+| V78 | desktop `.deck-stack` `78×114px` (was `52×76px`, +50%); inner `.deck-stack-layer` `66×102px` (was `44×68px`); mobile mini-stack `60×90px` (was `40×60px`); rotation/offset transforms scale proportionally so card stack reads as deck-art primary at tile width 280px |
+| V79 | distance-readable text targets at `font-size: 24px` root: panel headings ≥ `1.05rem` (was 0.75rem); deck names ≥ `1.05rem` (was 0.9rem); card-frame name ≥ `1.25rem`; card-frame description ≥ `1rem`; count badges ≥ `0.95rem`. Letter-spacing on uppercase headings reduced 0.12em → 0.08em to compensate |
+| V80 | V72 KEEP-btn fit re-verified at new scale: 4 KEEP btns + DISCARD + DRAW ANOTHER must fit center column (`1fr` of viewport ≥1024px ≈ 341px) without horizontal scroll; icon+number compaction kicks in earlier — supersedes verification clause of V72 |
 
 ## §T — Tasks
 
@@ -185,6 +189,13 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T69 | x | mobile tab switcher: rename labels `Active`→`Active Card`, `Inventory`→`Menu`; `Menu` tab content renders the three V68 sub-panels; remove standalone inventory tab content | V69,I.ui |
 | T70 | x | settings entry to change player count mid-game: btn in Quick Help sub-panel; opens count selector with V65 confirmation flow when reducing count drops items | V65,I.ui |
 | T71 | x | sw.js: bump CACHE name (`dq-v5` → `dq-v6`) so legacy clients refresh app shell after migration ships | V55,I.pwa |
+| T72 | x | bump `style.css` root: `html { font-size: 24px }`; `--gap: 24px`; verify no fixed-px overrides break layout | V77,I.ui |
+| T73 | . | rewrite `.app-layout` desktop grid → `grid-template-columns: 1fr 1fr 1fr`; remove `minmax(...)` constraints | V17,I.ui |
+| T74 | . | bump `.decks-list` desktop grid → `repeat(auto-fill, minmax(280px, 1fr))`; verify wrap at 1024 / 1440 / 1920 | V53,I.ui |
+| T75 | . | bump `.deck-stack` 52→78, `.deck-stack-layer` 44→66 desktop; mobile mini-stack 40→60; scale offset transforms; verify no clipping inside tile padding | V78,I.ui |
+| T76 | . | bump `.card-frame max-width: 340px`; `.active-card-actions max-width: 380px`; verify center panel content fits at 1fr/1024 viewport | V54,I.ui |
+| T77 | . | audit + bump small-text `rem` values per V79 (panel-heading, deck-entry-name, card-frame-name/description, deck-count-* badges); reduce uppercase letter-spacing 0.12em → 0.08em | V79,I.ui |
+| T78 | . | re-verify T65 / V72 KEEP-btn row at new scale with `playerCount=4`; tighten icon+number compaction threshold | V80,I.ui |
 
 ## §B — Bug log
 
@@ -200,3 +211,4 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | B8 | 2026-05-09 | desktop layout `280px 1fr 260px` + single-column `.decks-list` wastes horizontal space when game ships many decks (DungeonQuest = 11) — left panel scrolls while center column oversized | V17 amended, V53 added |
 | B9 | 2026-05-10 | sw.js install uses `cache.addAll` with remote CDN URL in ASSETS — any CDN hiccup rejects entire precache → SW never activates → offline reload shows browser native "no internet" page. Fetch handler also lacks navigation fallback (exact-URL match only) and register() call has no .catch (silent fail). | V55,V56,V57,V58 |
 | B10 | 2026-05-10 | global flat `inventory` cannot represent multi-player play; deck description in tile wastes vertical space at 11 decks; no UI to recover from accidental discards; "Reset All" did not reset player setup state | V59-V76, T60-T71: per-player `players[]` reshape + 1-4 selector at first run + on Reset All (V75); compact tiles (V66/V67); discard-history fullscreen with move-to-inventory (V62/V71) |
+| B11 | 2026-05-10 | layout + type sized for desk use; unreadable across a board-game table; deck panel hogs 60%+ of width while card frame capped at 220px | V77-V80, T72-T78: equal-thirds grid + 24px root + larger deck-stack + larger card-frame |

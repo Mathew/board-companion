@@ -12,14 +12,14 @@
   --border: #2a2a4a;
   --empty: #2a2a2a;
   --radius: 12px;
-  --gap: 16px;
+  --gap: 24px;
   --font-heading: system-ui, sans-serif;
   --font-body: system-ui, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --text-invert: #fff;
   --draw-duration: 1s;
 }
 
-html { font-size: 16px; }
+html { font-size: 24px; }
 
 body {
   background: var(--bg);
