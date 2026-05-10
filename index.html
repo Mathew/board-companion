@@ -133,7 +133,7 @@
                     <button
                       @click="$store.game.keepActive(p.id)"
                       class="btn btn-action-keep btn-keep-player"
-                      x-text="$store.game.playerCount > 2 ? '📦 P' + p.id : '📦 KEEP → P' + p.id"
+                      x-text="$store.game.playerCount > 1 ? '📦 P' + p.id : '📦 KEEP → P' + p.id"
                     ></button>
                   </template>
                 </div>
