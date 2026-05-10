@@ -201,7 +201,7 @@ PWA companion app for DungeonQuest board game. Manage card decks: configure cont
 | T79 | x | amend `.decks-list` desktop `minmax(280px,1fr)` → `minmax(180px,1fr)`; verify 1-col at 1024px viewport, 2-col at 1280/1600px, 3-col at 1920px | V53,I.ui |
 | T80 | x | container query on `.decks-list`: `container-type: inline-size; container-name: decks-list`; default `.deck-stack` `60×90` outer / `50×78` inner; `@container decks-list (min-width: 360px)` → `78×114` outer / `66×102` inner (scale offset transforms accordingly); remove existing `@media (min-width: 800px) .deck-stack`/`.deck-stack-layer` size rules at line ~257 in `style.css` | V81,I.ui |
 | T81 | x | desktop (`@media (min-width: 800px)`) `.inventory-panel`: `gap: var(--gap)`; `.right-subpanel { flex: 1 1 0; min-height: 0; border-bottom: none; padding-bottom: 0 }`; verify even vertical distribution at 720p / 1080p / 1440p tall viewports; verify per-subpanel scroll when summary list / discard list overflows | V82,I.ui |
-| T82 | . | sw.js: bump CACHE name (`dq-v6` → `dq-v7`) so legacy clients refresh app shell after layout ships | V55,I.pwa |
+| T82 | x | sw.js: bump CACHE name (`dq-v6` → `dq-v7`) so legacy clients refresh app shell after layout ships | V55,I.pwa |
 
 ## §B — Bug log
 

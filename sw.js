@@ -1,4 +1,4 @@
-const CACHE = 'dq-v6';
+const CACHE = 'dq-v7';
 const ASSETS = [
   './',
   './index.html',
